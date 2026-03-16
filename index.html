@@ -2,108 +2,145 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MMS - All In One Services</title>
+<title>MMS – All in One Services</title>
 <style>
-body{
-font-family: Arial, sans-serif;
-margin:0;
-background:#f2f2f2;
-}
-header{
-background:#1e73be;
-color:white;
-padding:20px;
-text-align:center;
-}
-nav{
-background:#444;
-padding:10px;
-text-align:center;
-}
-nav a{
-color:white;
-margin:0 15px;
-text-decoration:none;
-font-weight:bold;
-}
-.hero{
-padding:60px;
-text-align:center;
-background:white;
-}
-.services{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-padding:40px;
-}
-.card{
-background:white;
-padding:20px;
-border-radius:10px;
-text-align:center;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-.card h3{
-color:#1e73be;
-}
-footer{
-background:#333;
-color:white;
-text-align:center;
-padding:15px;
-margin-top:40px;
-}
-button{
-background:#1e73be;
-color:white;
-border:none;
-padding:10px 20px;
-border-radius:5px;
-cursor:pointer;
-}
+body{font-family:Arial, sans-serif;margin:0;background:#f2f2f2}
+header{background:#1e73be;color:white;padding:20px;text-align:center}
+nav{background:#444;padding:10px;text-align:center}
+nav a{color:white;margin:0 15px;text-decoration:none;font-weight:bold}
+section{padding:40px}
+.hero{text-align:center;background:white}
+.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+.card{background:white;padding:20px;border-radius:10px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
+.card h3{color:#1e73be}
+form{background:white;padding:20px;border-radius:10px;max-width:500px;margin:auto}
+input,select,textarea{width:100%;padding:10px;margin:10px 0;border:1px solid #ccc;border-radius:5px}
+button{background:#1e73be;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer}
+table{width:100%;border-collapse:collapse;background:white}
+th,td{padding:10px;border:1px solid #ddd;text-align:left}
+footer{background:#333;color:white;text-align:center;padding:15px;margin-top:40px}
+.hidden{display:none}
 </style>
 </head>
 <body><header>
 <h1>MMS</h1>
-<p>All-in-One Service Platform</p>
+<p>All‑in‑One Service Platform</p>
 </header><nav>
-<a href="#">Home</a>
+<a href="#home">Home</a>
 <a href="#services">Services</a>
+<a href="#book">Book Service</a>
 <a href="#worker">Worker Register</a>
-<a href="#contact">Contact</a>
-</nav><section class="hero">
+<a href="#admin">Admin</a>
+</nav><section id="home" class="hero">
 <h2>Book Any Service in One Place</h2>
 <p>Food, Grocery, Electrician, Mechanic, Tickets and Medicine.</p>
-<a href="https://docs.google.com/forms/d/e/1FAIpQLSc5Hl8I6gSLBsPlkmn64qZxeSBJPYJ-uhhLewmMoKBnQQsN4A/viewform?usp=header" target="_blank">
-<button>Request Service</button>
-</a>
-</section><section id="services" class="services"><div class="card">
-<h3>Food</h3>
-<p>Order meals from nearby restaurants.</p>
-</div><div class="card">
-<h3>Grocery</h3>
-<p>Daily essentials delivered to your home.</p>
-</div><div class="card">
-<h3>Electrician</h3>
-<p>Book verified electricians instantly.</p>
-</div><div class="card">
-<h3>Mechanic</h3>
-<p>Vehicle repair and roadside help.</p>
-</div><div class="card">
-<h3>Tickets</h3>
-<p>Bus and train ticket booking.</p>
-</div><div class="card">
-<h3>Medicine</h3>
-<p>Order medicines from pharmacies.</p>
-</div></section><section id="worker" class="hero">
+<a href="#book"><button>Request Service</button></a>
+</section><section id="services">
+<h2>Our Services</h2>
+<div class="services">
+<div class="card"><h3>Food</h3><p>Order meals easily.</p></div>
+<div class="card"><h3>Grocery</h3><p>Daily essentials delivery.</p></div>
+<div class="card"><h3>Electrician</h3><p>Book electricians.</p></div>
+<div class="card"><h3>Mechanic</h3><p>Vehicle repair help.</p></div>
+<div class="card"><h3>Tickets</h3><p>Bus & train booking.</p></div>
+<div class="card"><h3>Medicine</h3><p>Order medicines.</p></div>
+</div>
+</section><section id="book">
+<h2>Book a Service</h2>
+<form id="bookingForm">
+<input type="text" placeholder="Name" id="name" required>
+<input type="tel" placeholder="Phone" id="phone" required>
+<select id="service" required>
+<option value="">Select Service</option>
+<option>Food</option>
+<option>Grocery</option>
+<option>Electrician</option>
+<option>Mechanic</option>
+<option>Tickets</option>
+<option>Medicine</option>
+</select>
+<textarea placeholder="Address / Details" id="details" required></textarea>
+<button type="submit">Submit Booking</button>
+</form>
+</section><section id="worker">
 <h2>Worker Registration</h2>
-<p>If you want to work with MMS register below.</p>
-<a href="https://docs.google.com/forms/d/e/1FAIpQLSc5Hl8I6gSLBsPlkmn64qZxeSBJPYJ-uhhLewmMoKBnQQsN4A/viewform?usp=header" target="_blank">
-<button>Register</button>
-</a>
-</section><footer id="contact">
+<form id="workerForm">
+<input type="text" placeholder="Worker Name" id="wname" required>
+<input type="tel" placeholder="Phone" id="wphone" required>
+<select id="wskill" required>
+<option value="">Select Skill</option>
+<option>Electrician</option>
+<option>Mechanic</option>
+<option>Delivery</option>
+</select>
+<input type="text" placeholder="City / Location" id="wlocation" required>
+<button type="submit">Register Worker</button>
+</form>
+</section><section id="admin">
+<h2>Admin Panel</h2>
+<button onclick="showOrders()">Show Orders</button>
+<button onclick="showWorkers()">Show Workers</button><h3>Orders</h3>
+<table id="ordersTable" class="hidden">
+<thead><tr><th>Name</th><th>Phone</th><th>Service</th><th>Details</th></tr></thead>
+<tbody></tbody>
+</table><h3>Workers</h3>
+<table id="workersTable" class="hidden">
+<thead><tr><th>Name</th><th>Phone</th><th>Skill</th><th>Location</th></tr></thead>
+<tbody></tbody>
+</table>
+</section><footer>
 <p>© 2026 MMS Platform</p>
 <p>All services in one place</p>
-</footer></body>
+</footer><script>
+let orders = JSON.parse(localStorage.getItem("mms_orders")) || [];
+let workers = JSON.parse(localStorage.getItem("mms_workers")) || [];
+
+document.getElementById("bookingForm").addEventListener("submit",function(e){
+e.preventDefault();
+let order={
+name:name.value,
+phone:phone.value,
+service:service.value,
+details:details.value
+};
+orders.push(order);
+localStorage.setItem("mms_orders",JSON.stringify(orders));
+alert("Booking submitted!");
+this.reset();
+});
+
+document.getElementById("workerForm").addEventListener("submit",function(e){
+e.preventDefault();
+let worker={
+name:wname.value,
+phone:wphone.value,
+skill:wskill.value,
+location:wlocation.value
+};
+workers.push(worker);
+localStorage.setItem("mms_workers",JSON.stringify(workers));
+alert("Worker registered!");
+this.reset();
+});
+
+function showOrders(){
+let table=document.querySelector("#ordersTable tbody");
+table.innerHTML="";
+orders.forEach(o=>{
+let row=`<tr><td>${o.name}</td><td>${o.phone}</td><td>${o.service}</td><td>${o.details}</td></tr>`;
+table.innerHTML+=row;
+});
+document.getElementById("ordersTable").classList.remove("hidden");
+}
+
+function showWorkers(){
+let table=document.querySelector("#workersTable tbody");
+table.innerHTML="";
+workers.forEach(w=>{
+let row=`<tr><td>${w.name}</td><td>${w.phone}</td><td>${w.skill}</td><td>${w.location}</td></tr>`;
+table.innerHTML+=row;
+});
+document.getElementById("workersTable").classList.remove("hidden");
+}
+</script></body>
 </html>
