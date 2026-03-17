@@ -96,8 +96,38 @@ function getLocation(){if(navigator.geolocation){navigator.geolocation.getCurren
 
 function registerWorker(){let wname=document.getElementById('wname').value;let wphone=document.getElementById('wphone').value;let waddress=document.getElementById('waddress').value;if(!wname||!wphone||!waddress){alert('Fill all fields');return;}let workers=JSON.parse(localStorage.getItem('workers')||'[]');workers.push({name:wname,phone:wphone,address:waddress});localStorage.setItem('workers',JSON.stringify(workers));alert('Worker Registered 👍');}
 
-function login(){if(pass.value==='Swetha@149'){document.getElementById('panel').style.display='block';
-let workers=JSON.parse(localStorage.getItem('workers')||'[]');let wlist=document.getElementById('workerList');wlist.innerHTML='';workers.forEach(w=>{let li=document.createElement('li');li.innerHTML=`${w.name} | ${w.phone} | ${w.address} <a href='https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(w.address)}' target='_blank'>📍Map</a>`;wlist.appendChild(li);});
-let orders=JSON.parse(localStorage.getItem('orders')||'[]');let olist=document.getElementById('orderList');olist.innerHTML='';orders.forEach(o=>{let li=document.createElement('li');li.innerHTML=`${o.name} | ${o.phone} | ${o.service} - ${o.sub} | ${o.address} <a href='https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}' target='_blank'>📍Map</a>`;olist.appendChild(li);});}else alert('Wrong Password');}
+function login(){
+if(pass.value==='Swetha@149'){
+document.getElementById('panel').style.display='block';
+
+let workers=JSON.parse(localStorage.getItem('workers')||'[]');
+let wlist=document.getElementById('workerList');
+wlist.innerHTML='';
+workers.forEach(w=>{
+let mapLink;
+if(w.address.includes('Lat:')){
+ let parts = w.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/);
+ mapLink = `https://www.google.com/maps?q=${parts[1]},${parts[2]}`;
+}else{mapLink=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(w.address)}`;}
+let li=document.createElement('li');
+li.innerHTML=`${w.name} | ${w.phone} | ${w.address} <a href='${mapLink}' target='_blank'>📍Map</a>`;
+wlist.appendChild(li);
+});
+
+let orders=JSON.parse(localStorage.getItem('orders')||'[]');
+let olist=document.getElementById('orderList');
+olist.innerHTML='';
+orders.forEach(o=>{
+let mapLink;
+if(o.address.includes('Lat:')){
+ let parts = o.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/);
+ mapLink = `https://www.google.com/maps?q=${parts[1]},${parts[2]}`;
+}else{mapLink=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}`;}
+let li=document.createElement('li');
+li.innerHTML=`${o.name} | ${o.phone} | ${o.service} - ${o.sub} | ${o.address} <a href='${mapLink}' target='_blank'>📍Map</a>`;
+olist.appendChild(li);
+});
+}else alert('Wrong Password');
+}
 </script></body>
 </html>
