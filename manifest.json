@@ -1,0 +1,9 @@
+{
+  "name": "MMS App",
+  "short_name": "MMS",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#1e73be",
+  "theme_color": "#1e73be",
+  "icons": []
+}
