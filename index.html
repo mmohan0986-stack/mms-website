@@ -73,7 +73,7 @@ nav button{background:none;border:none;font-size:16px;color:#1e73be}
 setTimeout(()=>{document.getElementById('splash').style.display='none';document.getElementById('home').classList.add('active');},2000);
 
 function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function selectService(s){document.getElementById('service').value=s;show('booking');}
+function selectService(s){document.getElementById('service').value=s;updateType();show('booking');}
 
 function book(){
 let name=document.getElementById('name').value;
@@ -86,7 +86,7 @@ orders.push({name,phone,service,sub,address});
 localStorage.setItem('orders',JSON.stringify(orders));
 localStorage.setItem('lastAddress', address);
 alert('Booked 🚀\n'+service+' - '+sub);}
-window.onload=function(){let saved=localStorage.getItem('lastAddress');if(saved){document.getElementById('address').value=saved;}}
+window.onload=function(){let saved=localStorage.getItem('lastAddress');if(saved){document.getElementById('address').value=saved;updateType();}}
 
 function updateType(){
 let service=document.getElementById('service').value;
@@ -137,4 +137,4 @@ olist.appendChild(li);
 }else alert('Wrong Password');
 }
 </script></body>
-</html>
+ </html>
