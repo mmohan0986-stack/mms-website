@@ -12,12 +12,26 @@ body{
   min-height:100vh;
   overflow-y:auto; 
 }
+#splash{
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:#1e73be;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  z-index:9999;
+}
+#splash h1{font-size:50px;margin:0;}
+#splash p{font-size:20px;margin-top:10px;}
 header{
   background:#1e73be;
   color:white;
   text-align:center;
   padding:15px;
   box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  display:none;
 }
 .section{
   display:none;
@@ -122,7 +136,6 @@ nav button:hover{transform:scale(1.2);}
 }
 .foodItem span{flex:1;}
 .foodItem button{width:35px; margin:0 2px;}
-iframe{margin-top:5px; border-radius:10px;}
 @media(max-width:600px){
   #foodList,#cart{font-size:14px;}
   button{padding:12px;}
@@ -130,6 +143,12 @@ iframe{margin-top:5px; border-radius:10px;}
 </style>
 </head>
 <body>
+
+<!-- Splash Screen -->
+<div id="splash">
+  <h1>MMS</h1>
+  <p>"All Services, One Place"</p>
+</div>
 
 <header>MMS</header>
 
@@ -197,10 +216,8 @@ iframe{margin-top:5px; border-radius:10px;}
 <div id="panel" style="display:none">
 <h3>Workers</h3>
 <ul id="workerList"></ul>
-<div id="workerMapContainer"></div>
 <h3>Orders</h3>
 <ul id="orderList"></ul>
-<div id="orderMapContainer"></div>
 </div>
 </div>
 
@@ -219,6 +236,15 @@ iframe{margin-top:5px; border-radius:10px;}
 </nav>
 
 <script>
+// Splash screen
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('splash').style.display='none';
+    document.querySelector('header').style.display='block';
+    show('home');
+  },2000);
+});
+
 // Sections
 function show(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -270,7 +296,7 @@ function openServicePage(service){
   show('servicePage');
 }
 
-// Book Food with location
+// Book Food with auto/manual address
 function bookFood(){
   let selectedFood=[];
   for(let k in foodCart){if(foodCart[k]>0) selectedFood.push(k+' x'+foodCart[k]);}
@@ -367,40 +393,21 @@ function login(){
 
 function updateAdminWorkers(){
   let workers=JSON.parse(localStorage.getItem('workers')||'[]');
-  let wlist=document.getElementById('workerList'); 
-  let wmap=document.getElementById('workerMapContainer'); wmap.innerHTML='';
-  wlist.innerHTML='';
+  let wlist=document.getElementById('workerList'); wlist.innerHTML='';
   workers.forEach(w=>{
-    let li=document.createElement('li'); 
-    li.innerHTML=`${w.name} | ${w.phone} | ${w.service} | ${w.sub ? w.sub : ''}`;
+    let li=document.createElement('li');
+    li.innerHTML=`${w.name} | ${w.phone} | ${w.service} | ${w.sub ? w.sub : ''} | <a href="${w.map}" target="_blank">Map</a>`;
     wlist.appendChild(li);
-
-    if(w.map && w.map.startsWith('https://www.google.com/maps')){
-      let iframe=document.createElement('iframe');
-      iframe.src=w.map.replace("https://www.google.com/maps?q=","https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=");
-      iframe.width="100%"; iframe.height="200";
-      iframe.style.border="0";
-      wmap.appendChild(iframe);
-    }
   });
 }
+
 function updateAdminOrders(){
   let orders=JSON.parse(localStorage.getItem('orders')||'[]');
-  let olist=document.getElementById('orderList'); 
-  let omap=document.getElementById('orderMapContainer'); omap.innerHTML='';
-  olist.innerHTML='';
+  let olist=document.getElementById('orderList'); olist.innerHTML='';
   orders.forEach(o=>{
     let li=document.createElement('li');
-    li.innerHTML=`${o.service} ${o.sub?'- '+o.sub:''} ${o.items?'- '+o.items:''} | ${o.name} | ${o.phone}`;
+    li.innerHTML=`${o.service} ${o.sub?'- '+o.sub:''} ${o.items?'- '+o.items:''} | ${o.name} | ${o.phone} | <a href="${o.map}" target="_blank">Map</a>`;
     olist.appendChild(li);
-
-    if(o.map && o.map.startsWith('https://www.google.com/maps')){
-      let iframe=document.createElement('iframe');
-      iframe.src=o.map.replace("https://www.google.com/maps?q=","https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=");
-      iframe.width="100%"; iframe.height="200";
-      iframe.style.border="0";
-      omap.appendChild(iframe);
-    }
   });
 }
 
