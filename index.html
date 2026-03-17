@@ -5,152 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MMS Ultra App</title>
 <style>
-body{
-  font-family: Arial,sans-serif;
-  margin:0;
-  background:#eef2f7;
-  min-height:100vh;
-  overflow-y:auto; 
-}
-#splash{
-  position:fixed;
-  top:0;left:0;width:100%;height:100%;
-  background:#1e73be;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  color:white;
-  z-index:9999;
-}
-#splash h1{font-size:50px;margin:0;}
-#splash p{font-size:20px;margin-top:10px;}
-header{
-  background:#1e73be;
-  color:white;
-  text-align:center;
-  padding:15px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
-  display:none;
-}
-.section{
-  display:none;
-  padding:20px;
-  animation:fade 0.5s;
-  max-height:none;
-  overflow:visible;
-}
+body{font-family:Arial,sans-serif;margin:0;background:#eef2f7;overflow-y:auto;}
+header{text-align:center;padding:15px;color:white;background:#1e73be;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+.section{display:none;padding:20px;animation:fade 0.5s;}
 .active{display:block;}
 @keyframes fade{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-.card{
-  background:white;
-  margin:10px;
-  padding:20px;
-  border-radius:15px;
-  text-align:center;
-  box-shadow:0 3px 8px rgba(0,0,0,0.1);
-  transition:transform 0.3s,box-shadow 0.3s;
-}
-.card:hover{
-  transform:scale(1.05);
-  box-shadow:0 8px 16px rgba(0,0,0,0.2);
-  cursor:pointer;
-}
-input,select{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-  border-radius:10px;
-  border:1px solid #ccc;
-  outline:none;
-}
-button{
-  background:#1e73be;
-  color:white;
-  border:none;
-  padding:10px;
-  border-radius:10px;
-  width:100%;
-  margin-top:10px;
-  transition:0.2s;
-}
-button:hover{
-  transform:scale(1.05);
-  cursor:pointer;
-}
-nav{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  background:white;
-  display:flex;
-  justify-content:space-around;
-  padding:10px 0;
-  box-shadow:0 -2px 8px rgba(0,0,0,0.1);
-}
-nav button{
-  background:none;
-  border:none;
-  font-size:18px;
-  color:#1e73be;
-}
+.card{background:white;margin:10px;padding:20px;border-radius:15px;text-align:center;box-shadow:0 3px 8px rgba(0,0,0,0.1);transition:transform 0.3s,box-shadow 0.3s;}
+.card:hover{transform:scale(1.05);box-shadow:0 8px 16px rgba(0,0,0,0.2);cursor:pointer;}
+input,select{width:100%;padding:10px;margin:10px 0;border-radius:10px;border:1px solid #ccc;outline:none;}
+button{background:#1e73be;color:white;border:none;padding:10px;border-radius:10px;width:100%;margin-top:10px;transition:0.2s;}
+button:hover{transform:scale(1.05);cursor:pointer;}
+nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-content:space-around;padding:10px 0;box-shadow:0 -2px 8px rgba(0,0,0,0.1);}
+nav button{background:none;border:none;font-size:18px;color:#1e73be;}
 nav button:hover{transform:scale(1.2);}
-#cart{
-  max-height:250px;
-  overflow-y:auto;
-  border:1px solid #ccc;
-  padding:5px;
-  border-radius:10px;
-  background:#f9f9f9;
-  margin-top:10px;
-}
-#cart div{
-  display:flex;
-  justify-content:space-between;
-  margin:5px 0;
-  padding:5px;
-  background:#fff;
-  border-radius:5px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.05);
-}
-#rocketContainer{
-  position:fixed;
-  bottom:10px;
-  left:50%;
-  transform:translateX(-50%);
-  display:none;
-  pointer-events:none;
-  z-index:999;
-}
+#cart{max-height:250px;overflow-y:auto;border:1px solid #ccc;padding:5px;border-radius:10px;background:#f9f9f9;margin-top:10px;}
+#cart div{display:flex;justify-content:space-between;margin:5px 0;padding:5px;background:#fff;border-radius:5px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+#rocketContainer{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:none;pointer-events:none;z-index:999;}
 #rocket{font-size:50px;}
 #fire{position:absolute;top:50px;left:50%;transform:translateX(-50%);font-size:25px;opacity:0.8;}
-.foodItem{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:5px 0;
-  padding:5px;
-  background:#fff;
-  border-radius:5px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.05);
-}
-.foodItem span{flex:1;}
-.foodItem button{width:35px; margin:0 2px;}
-@media(max-width:600px){
-  #foodList,#cart{font-size:14px;}
-  button{padding:12px;}
-}
+#mapConfirm,#mapConfirmService,#mapConfirmWorker{font-size:12px;margin-top:5px;}
+#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:#1e73be;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;}
+#splash h1{font-size:50px;margin:0;}
+#splash p{font-size:20px;}
+@media(max-width:600px){#foodList,#cart{font-size:14px;}button{padding:12px;}}
 </style>
 </head>
 <body>
 
-<!-- Splash Screen -->
+<!-- Splash -->
 <div id="splash">
   <h1>MMS</h1>
-  <p>"All Services, One Place"</p>
+  <p>"All services, One place"</p>
 </div>
 
-<header>MMS</header>
+<header>MMS Ultra App</header>
 
 <!-- Home -->
 <div id="home" class="section active">
@@ -176,10 +64,11 @@ nav button:hover{transform:scale(1.2);}
 <!-- Food Page -->
 <div id="foodPage" class="section">
 <h2>Food Menu</h2>
-<button onclick="bookFood()">Book Now 🚀</button>
 <div id="foodList"></div>
+<div id="mapConfirm"></div>
 <h3>Cart</h3>
 <div id="cart"></div>
+<button onclick="bookFood()">Book Now</button>
 </div>
 
 <!-- Generic Service Page -->
@@ -189,7 +78,8 @@ nav button:hover{transform:scale(1.2);}
 <input id="sname" placeholder="Name">
 <input id="sphone" placeholder="Mobile Number">
 <input id="saddress" placeholder="Address">
-<button onclick="bookService()">Book Now 🚀</button>
+<div id="mapConfirmService"></div>
+<button onclick="bookService()">Book Now</button>
 </div>
 
 <!-- Worker -->
@@ -205,6 +95,7 @@ nav button:hover{transform:scale(1.2);}
 </select>
 <select id="wsubcategory"></select>
 <input id="waddress" placeholder="Address">
+<div id="mapConfirmWorker"></div>
 <button onclick="registerWorker()">Register Worker</button>
 </div>
 
@@ -236,14 +127,8 @@ nav button:hover{transform:scale(1.2);}
 </nav>
 
 <script>
-// Splash screen
-window.addEventListener('load',()=>{
-  setTimeout(()=>{
-    document.getElementById('splash').style.display='none';
-    document.querySelector('header').style.display='block';
-    show('home');
-  },2000);
-});
+// Splash
+setTimeout(()=>{document.getElementById('splash').style.display='none';show('home');},2000);
 
 // Sections
 function show(id){
@@ -251,7 +136,7 @@ function show(id){
   document.getElementById(id).classList.add('active');
 }
 
-// Food menu
+// Food Menu
 let foodMenu=[
 {name:"Pizza",price:250},{name:"Burger",price:120},{name:"Sandwich",price:100},{name:"Pasta",price:180},{name:"Fried Rice",price:150},
 {name:"French Fries",price:80},{name:"Noodles",price:120},{name:"Cake",price:200},{name:"Ice Cream",price:90},{name:"Samosa",price:40}
@@ -262,19 +147,16 @@ foodMenu.forEach(item=>foodCart[item.name]=0);
 const foodList=document.getElementById('foodList');
 function updateCart(){
   const cartDiv=document.getElementById('cart'); cartDiv.innerHTML='';
-  for(let k in foodCart){if(foodCart[k]>0){
-    let d=document.createElement('div');
-    d.textContent=`${k} x${foodCart[k]}`;
-    cartDiv.appendChild(d);
-  }}
+  for(let k in foodCart){if(foodCart[k]>0){let d=document.createElement('div');d.textContent=`${k} x${foodCart[k]}`;cartDiv.appendChild(d);}}
 }
 foodMenu.forEach(item=>{
   let div=document.createElement('div');
-  div.className="foodItem";
   div.innerHTML=`<span>${item.name} - ₹${item.price}</span>
+    <span>
     <button onclick="changeQty('${item.name}',-1)">−</button>
     <span id="qty_${item.name}">0</span>
-    <button onclick="changeQty('${item.name}',1)">+</button>`;
+    <button onclick="changeQty('${item.name}',1)">+</button>
+    </span>`;
   foodList.appendChild(div);
 });
 
@@ -285,60 +167,47 @@ function changeQty(item,delta){
   updateCart();
 }
 
-function openFoodPage(){show('foodPage');updateCart();}
-
-// Generic Service Page
-function openServicePage(service){
-  document.getElementById('serviceTitle').innerText=service;
-  const typeSelect=document.getElementById('serviceType'); typeSelect.innerHTML='';
-  if(service==='Grocery'){typeSelect.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
-  else if(service==='Electrician' || service==='Mechanic'){typeSelect.innerHTML=`<option>Installation</option><option>Repair</option>`;}
-  show('servicePage');
-}
-
-// Book Food with auto/manual address
-function bookFood(){
-  let selectedFood=[];
-  for(let k in foodCart){if(foodCart[k]>0) selectedFood.push(k+' x'+foodCart[k]);}
-  if(selectedFood.length===0){alert('Select at least one item'); return;}
-
-  let name = prompt("Enter your name");
-  let phone = prompt("Enter your mobile number");
-  let addr = prompt("Enter address (leave blank for auto-detect)");
-
-  if(!name || !phone){ alert("Name & phone required"); return; }
-
-  if(!addr && navigator.geolocation){
+// Map Detection
+let confirmedMapLink="";
+function detectLocation(mapDivId){
+  if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(
       (pos)=>{
-        let lat = pos.coords.latitude;
-        let lon = pos.coords.longitude;
-        addr = `https://www.google.com/maps?q=${lat},${lon}`;
-        saveFoodOrder(name, phone, addr, selectedFood);
+        let lat=pos.coords.latitude, lon=pos.coords.longitude;
+        confirmedMapLink=`https://www.google.com/maps?q=${lat},${lon}`;
+        document.getElementById(mapDivId).innerHTML=`🌍 <a href="${confirmedMapLink}" target="_blank">Confirm Map</a>`;
       },
       ()=>{
-        addr = "Address not provided";
-        saveFoodOrder(name, phone, addr, selectedFood);
+        let manualAddr = prompt("Location not detected. Enter manually:");
+        confirmedMapLink=`https://www.google.com/maps?q=${encodeURIComponent(manualAddr)}`;
+        document.getElementById(mapDivId).innerHTML=`🌍 <a href="${confirmedMapLink}" target="_blank">Confirm Map</a>`;
       }
     );
   } else {
-    if(!addr) addr="Address not provided";
-    if(!addr.startsWith('https://')) addr = `https://www.google.com/maps?q=${encodeURIComponent(addr)}`;
-    saveFoodOrder(name, phone, addr, selectedFood);
+    let manualAddr = prompt("Geolocation not supported. Enter manually:");
+    confirmedMapLink=`https://www.google.com/maps?q=${encodeURIComponent(manualAddr)}`;
+    document.getElementById(mapDivId).innerHTML=`🌍 <a href="${confirmedMapLink}" target="_blank">Confirm Map</a>`;
   }
 }
 
-function saveFoodOrder(name, phone, addr, selectedFood){
+// Open Food Page
+function openFoodPage(){
+  show('foodPage'); updateCart();
+  detectLocation('mapConfirm');
+}
+
+// Book Food
+function bookFood(){
+  if(!confirmedMapLink){ alert("Location not detected!"); return; }
+  let selectedFood=[];
+  for(let k in foodCart){if(foodCart[k]>0) selectedFood.push(k+' x'+foodCart[k]);}
+  if(selectedFood.length===0){alert('Select at least one item'); return;}
+  let name=prompt("Enter your name");
+  let phone=prompt("Enter your mobile number");
+  if(!name||!phone){alert("Name & phone required"); return;}
   let orders=JSON.parse(localStorage.getItem('orders')||'[]');
-  orders.push({
-    service:'Food',
-    items:selectedFood.join(', '),
-    name:name,
-    phone:phone,
-    address:addr,
-    map:addr
-  });
-  localStorage.setItem('orders', JSON.stringify(orders));
+  orders.push({service:'Food',items:selectedFood.join(', '),name:name,phone:phone,map:confirmedMapLink});
+  localStorage.setItem('orders',JSON.stringify(orders));
   alert('Order Booked 🚀: '+selectedFood.join(', '));
   animateRocket();
   foodCart={}; foodMenu.forEach(item=>foodCart[item.name]=0);
@@ -347,20 +216,27 @@ function saveFoodOrder(name, phone, addr, selectedFood){
   if(document.getElementById('panel')?.style.display==='block') updateAdminOrders();
 }
 
-// Book Generic Service
+// Generic Service Page
+function openServicePage(service){
+  document.getElementById('serviceTitle').innerText=service;
+  const typeSelect=document.getElementById('serviceType'); typeSelect.innerHTML='';
+  if(service==='Grocery'){typeSelect.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
+  else if(service==='Electrician'||service==='Mechanic'){typeSelect.innerHTML=`<option>Installation</option><option>Repair</option>`;}
+  show('servicePage');
+  detectLocation('mapConfirmService');
+}
+
+// Book Service
 function bookService(){
+  if(!confirmedMapLink){alert("Location not detected!"); return;}
   let name=document.getElementById('sname').value;
   let phone=document.getElementById('sphone').value;
   let address=document.getElementById('saddress').value;
   let service=document.getElementById('serviceTitle').innerText;
   let sub=document.getElementById('serviceType').value;
-
-  if(!name || !phone || !address){alert('Fill all fields'); return;}
-
-  if(!address.startsWith('https://')) address = `https://www.google.com/maps?q=${encodeURIComponent(address)}`;
-
+  if(!name||!phone){alert('Fill all fields'); return;}
   let orders=JSON.parse(localStorage.getItem('orders')||'[]');
-  orders.push({service,sub,name,phone,address,map:address});
+  orders.push({service,sub,name,phone,address,map:confirmedMapLink});
   localStorage.setItem('orders',JSON.stringify(orders));
   alert('Order Booked 🚀: '+service+' - '+sub);
   animateRocket();
@@ -368,16 +244,23 @@ function bookService(){
 }
 
 // Worker
+function updateWorkerType(){
+  let service=document.getElementById('wservice').value;
+  let sub=document.getElementById('wsubcategory'); sub.innerHTML='';
+  if(service==='Food'||service==='Grocery'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
+  else{sub.innerHTML=`<option>Installation</option><option>Repair</option>`;}
+  detectLocation('mapConfirmWorker'); // detect worker location
+}
+
 function registerWorker(){
   let wname=document.getElementById('wname').value;
   let wphone=document.getElementById('wphone').value;
   let wservice=document.getElementById('wservice').value;
   let wsub=document.getElementById('wsubcategory').value;
   let waddress=document.getElementById('waddress').value;
-  if(!wname||!wphone||!waddress){alert('Fill all fields'); return;}
-  if(!waddress.startsWith('https://')) waddress=`https://www.google.com/maps?q=${encodeURIComponent(waddress)}`;
+  if(!wname||!wphone){alert('Fill all fields'); return;}
   let workers=JSON.parse(localStorage.getItem('workers')||'[]');
-  workers.push({name:wname,phone:wphone,service:wservice,sub:wsub,address:waddress,map:waddress});
+  workers.push({name:wname,phone:wphone,service:wservice,sub:wsub,address:waddress,map:confirmedMapLink});
   localStorage.setItem('workers',JSON.stringify(workers));
   alert('Worker Registered 👍');
   if(document.getElementById('panel').style.display==='block') updateAdminWorkers();
@@ -387,7 +270,8 @@ function registerWorker(){
 function login(){
   if(document.getElementById('pass').value==='Swetha@149'){
     document.getElementById('panel').style.display='block';
-    updateAdminWorkers();updateAdminOrders();
+    updateAdminWorkers();
+    updateAdminOrders();
   }else alert('Wrong Password');
 }
 
@@ -396,17 +280,16 @@ function updateAdminWorkers(){
   let wlist=document.getElementById('workerList'); wlist.innerHTML='';
   workers.forEach(w=>{
     let li=document.createElement('li');
-    li.innerHTML=`${w.name} | ${w.phone} | ${w.service} | ${w.sub ? w.sub : ''} | <a href="${w.map}" target="_blank">Map</a>`;
+    li.innerHTML=`${w.name} | ${w.phone} | ${w.service} | <a href="${w.map}" target="_blank">Map</a>`;
     wlist.appendChild(li);
   });
 }
-
 function updateAdminOrders(){
   let orders=JSON.parse(localStorage.getItem('orders')||'[]');
   let olist=document.getElementById('orderList'); olist.innerHTML='';
   orders.forEach(o=>{
     let li=document.createElement('li');
-    li.innerHTML=`${o.service} ${o.sub?'- '+o.sub:''} ${o.items?'- '+o.items:''} | ${o.name} | ${o.phone} | <a href="${o.map}" target="_blank">Map</a>`;
+    li.innerHTML=`${o.service} ${o.sub?'- '+o.sub:''} ${o.items?'- '+o.items:''} | <a href="${o.map}" target="_blank">Map</a>`;
     olist.appendChild(li);
   });
 }
@@ -425,15 +308,6 @@ function animateRocket(){
     fireAnim+=0.3;
     if(pos>window.innerHeight){clearInterval(interval);rocketContainer.style.display='none';}
   },30);
-}
-
-// Worker subcategories
-function updateWorkerType(){
-  let service=document.getElementById('wservice').value;
-  let sub=document.getElementById('wsubcategory'); sub.innerHTML='';
-  if(service==='Food'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
-  else if(service==='Grocery'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
-  else{sub.innerHTML=`<option>Installation</option><option>Repair</option>`;}
 }
 
 // Initialize
