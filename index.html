@@ -5,40 +5,114 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MMS</title>
 <style>
-body{font-family:Arial,sans-serif;margin:0;background:#eef2f7;overflow-y:auto;}
-header{text-align:center;padding:15px;color:white;background:#1e73be;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-.section{display:none;padding:20px;animation:fade 0.5s;}
+body{
+  font-family: Arial,sans-serif;
+  margin:0;
+  background:#eef2f7;
+  min-height:100vh;
+  overflow-y:auto;
+}
+header{
+  background:#1e73be;
+  color:white;
+  text-align:center;
+  padding:15px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+.section{
+  display:none;
+  padding:20px;
+  animation:fade 0.5s;
+  max-height:none;
+  overflow:visible;
+}
 .active{display:block;}
 @keyframes fade{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-.card{background:white;margin:10px;padding:20px;border-radius:15px;text-align:center;box-shadow:0 3px 8px rgba(0,0,0,0.1);transition:transform 0.3s,box-shadow 0.3s;}
-.card:hover{transform:scale(1.05);box-shadow:0 8px 16px rgba(0,0,0,0.2);cursor:pointer;}
-input,select{width:100%;padding:10px;margin:10px 0;border-radius:10px;border:1px solid #ccc;outline:none;}
-button{background:#1e73be;color:white;border:none;padding:10px;border-radius:10px;width:100%;margin-top:10px;transition:0.2s;}
-button:hover{transform:scale(1.05);cursor:pointer;}
-nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-content:space-around;padding:10px 0;box-shadow:0 -2px 8px rgba(0,0,0,0.1);}
+.card{
+  background:white;
+  margin:10px;
+  padding:20px;
+  border-radius:15px;
+  text-align:center;
+  box-shadow:0 3px 8px rgba(0,0,0,0.1);
+  transition:transform 0.3s,box-shadow 0.3s;
+}
+.card:hover{cursor:pointer;}
+input,select{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border-radius:10px;
+  border:1px solid #ccc;
+  outline:none;
+}
+button{
+  background:#1e73be;
+  color:white;
+  border:none;
+  padding:10px;
+  border-radius:10px;
+  width:100%;
+  margin-top:10px;
+  transition:0.2s;
+}
+nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+  box-shadow:0 -2px 8px rgba(0,0,0,0.1);
+}
 nav button{background:none;border:none;font-size:18px;color:#1e73be;}
-nav button:hover{transform:scale(1.2);}
-#cart{max-height:250px;overflow-y:auto;border:1px solid #ccc;padding:5px;border-radius:10px;background:#f9f9f9;margin-top:10px;}
-#cart div{display:flex;justify-content:space-between;margin:5px 0;padding:5px;background:#fff;border-radius:5px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
-#rocketContainer{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:none;pointer-events:none;z-index:999;}
-#rocket{font-size:50px;}
-#fire{position:absolute;top:50px;left:50%;transform:translateX(-50%);font-size:25px;opacity:0.8;}
-#mapConfirm,#mapConfirmService,#mapConfirmWorker{font-size:12px;margin-top:5px;}
-#foodList div{display:flex;justify-content:space-between;align-items:center;margin:10px 0;padding:10px;background:white;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-#foodList span{margin:0 5px;}
-#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:#1e73be;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;}
-#splash h1{font-size:50px;margin:0;}
-#splash p{font-size:20px;}
-@media(max-width:600px){#foodList,#cart{font-size:14px;}button{padding:12px;}}
+/* Click highlight animation */
+.clickable{
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.clickable.active{
+  transform: scale(1.1);
+  box-shadow: 0 0 15px #1e73be;
+}
+/* Food item layout */
+.food-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:white;
+  padding:10px;
+  margin:5px 0;
+  border-radius:10px;
+  box-shadow:0 2px 4px rgba(0,0,0,0.1);
+}
+.food-item button{
+  width:35px;
+  height:35px;
+  padding:0;
+  font-size:20px;
+}
+#cart{
+  max-height:200px;
+  overflow-y:auto;
+  border:1px solid #ccc;
+  padding:5px;
+  border-radius:10px;
+  background:#f9f9f9;
+  margin-top:10px;
+}
+#cart div{
+  display:flex;
+  justify-content:space-between;
+  margin:5px 0;
+  padding:5px;
+  background:#fff;
+  border-radius:5px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.05);
+}
 </style>
 </head>
 <body>
-
-<!-- Splash -->
-<div id="splash">
-  <h1>MMS</h1>
-  <p>"All services, One place"</p>
-</div>
 
 <header>MMS</header>
 
@@ -47,47 +121,47 @@ nav button:hover{transform:scale(1.2);}
 <h2>Welcome 👋</h2>
 <p>All-in-One Services</p>
 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-top:20px">
-<div class="card" onclick="show('services')">🛠 Services</div>
-<div class="card" onclick="show('booking')">📦 Book</div>
-<div class="card" onclick="show('worker')">👷 Work</div>
-<div class="card" onclick="show('admin')">🔐 Admin</div>
+<div class="card clickable" onclick="show('services')">🛠 Services</div>
+<div class="card clickable" onclick="show('booking')">📦 Book</div>
+<div class="card clickable" onclick="show('worker')">👷 Work</div>
+<div class="card clickable" onclick="show('admin')">🔐 Admin</div>
 </div>
 </div>
 
 <!-- Services -->
 <div id="services" class="section">
 <h2>Services</h2>
-<div class="card" onclick="openFoodPage()">🍔 Food</div>
-<div class="card" onclick="openServicePage('Grocery')">🛒 Grocery</div>
-<div class="card" onclick="openServicePage('Electrician')">⚡ Electrician</div>
-<div class="card" onclick="openServicePage('Mechanic')">🔧 Mechanic</div>
+<div class="card clickable" onclick="openFoodPage()">🍔 Food</div>
+<div class="card clickable" onclick="openServicePage('Grocery')">🛒 Grocery</div>
+<div class="card clickable" onclick="openServicePage('Electrician')">⚡ Electrician</div>
+<div class="card clickable" onclick="openServicePage('Mechanic')">🔧 Mechanic</div>
 </div>
 
 <!-- Food Page -->
 <div id="foodPage" class="section">
-<button onclick="bookFood()">Book Now</button>
-<div>
-<label><input type="checkbox" id="useCurrentLocationFood" onclick="handleFoodLocation()"> Use My Current Location</label>
+<button class="clickable" onclick="bookFood()">Book Now</button>
+
+<div style="margin:10px 0; position:relative;">
+  <span id="useLocationBtn" class="clickable" 
+        style="color:#1e73be; cursor:pointer; font-weight:bold; display:inline-block; padding:5px; border-radius:5px; border:1px solid #1e73be;" 
+        onclick="useFoodLocation()">📍 Use My Current Location</span>
+  <input id="manualAddressFood" placeholder="Enter address manually" style="display:block;margin-top:5px;">
+  <div id="mapConfirm" style="margin-top:5px;"></div>
 </div>
-<input id="manualAddressFood" placeholder="Enter address manually" style="display:none;">
+
 <div id="foodList"></div>
+<h3>Cart</h3>
 <div id="cart"></div>
-<div id="mapConfirm"></div>
 </div>
 
 <!-- Generic Service Page -->
 <div id="servicePage" class="section">
-<button onclick="bookService()">Book Now</button>
-<div>
-<label><input type="checkbox" id="useCurrentLocationService" onclick="handleServiceLocation()"> Use My Current Location</label>
-</div>
-<input id="manualAddressService" placeholder="Enter address manually" style="display:none;">
 <h2 id="serviceTitle"></h2>
 <select id="serviceType"></select>
 <input id="sname" placeholder="Name">
 <input id="sphone" placeholder="Mobile Number">
 <input id="saddress" placeholder="Address">
-<div id="mapConfirmService"></div>
+<button class="clickable" onclick="bookService()">Book Now</button>
 </div>
 
 <!-- Worker -->
@@ -103,16 +177,14 @@ nav button:hover{transform:scale(1.2);}
 </select>
 <select id="wsubcategory"></select>
 <input id="waddress" placeholder="Address">
-<div id="mapConfirmWorker"></div>
-<label><input type="checkbox" id="useCurrentLocationWorker" onclick="handleWorkerLocation()"> Use My Current Location</label>
-<button onclick="registerWorker()">Register Worker</button>
+<button class="clickable" onclick="registerWorker()">Register Worker</button>
 </div>
 
 <!-- Admin -->
 <div id="admin" class="section">
 <h2>Admin</h2>
 <input type="password" id="pass" placeholder="Password">
-<button onclick="login()">Login</button>
+<button class="clickable" onclick="login()">Login</button>
 <div id="panel" style="display:none">
 <h3>Workers</h3>
 <ul id="workerList"></ul>
@@ -121,24 +193,14 @@ nav button:hover{transform:scale(1.2);}
 </div>
 </div>
 
-<!-- Rocket -->
-<div id="rocketContainer">
-<div id="rocket">🚀</div>
-<div id="fire">🔥</div>
-</div>
-<audio id="rocketSound" src="https://www.soundjay.com/mechanical/sounds/rocket-launch-01.mp3"></audio>
-
 <nav>
-<button onclick="show('home')">🏠</button>
-<button onclick="show('services')">🛠</button>
-<button onclick="show('worker')">👷</button>
-<button onclick="show('admin')">🔐</button>
+<button class="clickable" onclick="show('home')">🏠</button>
+<button class="clickable" onclick="show('services')">🛠</button>
+<button class="clickable" onclick="show('worker')">👷</button>
+<button class="clickable" onclick="show('admin')">🔐</button>
 </nav>
 
 <script>
-// Splash
-setTimeout(()=>{document.getElementById('splash').style.display='none';show('home');},2000);
-
 // Sections
 function show(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -152,24 +214,21 @@ let foodMenu=[
 ];
 let foodCart={};
 foodMenu.forEach(item=>foodCart[item.name]=0);
-const foodList=document.getElementById('foodList');
 
+const foodList=document.getElementById('foodList');
 function updateCart(){
   const cartDiv=document.getElementById('cart'); cartDiv.innerHTML='';
   for(let k in foodCart){if(foodCart[k]>0){let d=document.createElement('div');d.textContent=`${k} x${foodCart[k]}`;cartDiv.appendChild(d);}}
 }
-
-// Build food boxes
 foodMenu.forEach(item=>{
   let div=document.createElement('div');
-  div.innerHTML=`
-  <div style="flex:1">${item.name} - ₹${item.price}</div>
-  <div style="display:flex;gap:5px;">
-  <button onclick="changeQty('${item.name}',1)">+</button>
-  <span id="qty_${item.name}">0</span>
-  <button onclick="changeQty('${item.name}',-1)">−</button>
-  </div>
-  `;
+  div.className='food-item clickable';
+  div.innerHTML=`<span>${item.name} - ₹${item.price}</span>
+    <span>
+    <button onclick="changeQty('${item.name}',-1)">−</button>
+    <span id="qty_${item.name}">0</span>
+    <button onclick="changeQty('${item.name}',1)">+</button>
+    </span>`;
   foodList.appendChild(div);
 });
 
@@ -180,29 +239,102 @@ function changeQty(item,delta){
   updateCart();
 }
 
-// Map detection helpers
-let confirmedMapLinkFood="",confirmedMapLinkService="",confirmedMapLinkWorker="";
-function handleFoodLocation(){
-  let checkbox=document.getElementById('useCurrentLocationFood');
-  let manual=document.getElementById('manualAddressFood');
-  if(checkbox.checked){
-    manual.style.display='none';
-    detectLocation((link)=>{confirmedMapLinkFood=link;document.getElementById('mapConfirm').innerHTML=`🌍 <a href="${link}" target="_blank">Confirm Map</a>`;});
-  } else manual.style.display='block';
+function openFoodPage(){show('foodPage');updateCart();}
+
+// Generic Service Page
+function openServicePage(service){
+  document.getElementById('serviceTitle').innerText=service;
+  const typeSelect=document.getElementById('serviceType'); typeSelect.innerHTML='';
+  if(service==='Grocery'){typeSelect.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
+  else if(service==='Electrician' || service==='Mechanic'){typeSelect.innerHTML=`<option>Installation</option><option>Repair</option>`;}
+  show('servicePage');
 }
-function handleServiceLocation(){
-  let checkbox=document.getElementById('useCurrentLocationService');
-  let manual=document.getElementById('manualAddressService');
-  if(checkbox.checked){
-    manual.style.display='none';
-    detectLocation((link)=>{confirmedMapLinkService=link;document.getElementById('mapConfirmService').innerHTML=`🌍 <a href="${link}" target="_blank">Confirm Map</a>`;});
-  } else manual.style.display='block';
+
+// Book Food
+function bookFood(){
+  let selectedFood=[];
+  for(let k in foodCart){if(foodCart[k]>0) selectedFood.push(k+' x'+foodCart[k]);}
+  if(selectedFood.length===0){alert('Select at least one item');return;}
+  let orders=JSON.parse(localStorage.getItem('orders')||'[]');
+  let address=document.getElementById('manualAddressFood').value || confirmedMapLinkFood;
+  orders.push({service:'Food',food:selectedFood.join(', '),address});
+  localStorage.setItem('orders',JSON.stringify(orders));
+  alert('Order Booked 🚀: '+selectedFood.join(', '));
+  if(document.getElementById('panel')?.style.display==='block') updateAdminOrders();
+  foodCart = {}; foodMenu.forEach(item=>foodCart[item.name]=0);
+  document.querySelectorAll('#foodPage span[id^="qty_"]').forEach(s=>s.innerText=0);
+  updateCart();
 }
-function handleWorkerLocation(){
-  let checkbox=document.getElementById('useCurrentLocationWorker');
-  let manual=document.getElementById('waddress');
-  if(checkbox.checked){manual.readOnly=true;detectLocation((link)=>{confirmedMapLinkWorker=link;document.getElementById('mapConfirmWorker').innerHTML=`🌍 <a href="${link}" target="_blank">Confirm Map</a>`;});}
-  else manual.readOnly=false;
+
+// Book Generic Service
+function bookService(){
+  let name=document.getElementById('sname').value;
+  let phone=document.getElementById('sphone').value;
+  let address=document.getElementById('saddress').value;
+  let service=document.getElementById('serviceTitle').innerText;
+  let sub=document.getElementById('serviceType').value;
+  if(!name||!phone||!address){alert('Fill all fields');return;}
+  let orders=JSON.parse(localStorage.getItem('orders')||'[]');
+  orders.push({service,sub,name,phone,address});
+  localStorage.setItem('orders',JSON.stringify(orders));
+  alert('Order Booked 🚀: '+service+' - '+sub);
+  if(document.getElementById('panel')?.style.display==='block') updateAdminOrders();
+}
+
+// Worker
+function registerWorker(){
+  let wname=document.getElementById('wname').value;
+  let wphone=document.getElementById('wphone').value;
+  let wservice=document.getElementById('wservice').value;
+  let wsub=document.getElementById('wsubcategory').value;
+  let waddress=document.getElementById('waddress').value;
+  if(!wname||!wphone||!waddress){alert('Fill all fields'); return;}
+  let workers=JSON.parse(localStorage.getItem('workers')||'[]');
+  workers.push({name:wname,phone:wphone,service:wservice,sub:wsub,address:waddress});
+  localStorage.setItem('workers',JSON.stringify(workers));
+  alert('Worker Registered 👍');
+  if(document.getElementById('panel').style.display==='block') updateAdminWorkers();
+}
+
+// Admin
+function login(){
+  if(document.getElementById('pass').value==='Swetha@149'){
+    document.getElementById('panel').style.display='block';
+    updateAdminWorkers();updateAdminOrders();
+  }else alert('Wrong Password');
+}
+
+function updateAdminWorkers(){
+  let workers=JSON.parse(localStorage.getItem('workers')||'[]');
+  let wlist=document.getElementById('workerList'); wlist.innerHTML='';
+  workers.forEach(w=>{let li=document.createElement('li'); li.textContent=`${w.name} | ${w.phone} | ${w.service} | ${w.sub} | ${w.address}`; wlist.appendChild(li);});
+}
+function updateAdminOrders(){
+  let orders=JSON.parse(localStorage.getItem('orders')||'[]');
+  let olist=document.getElementById('orderList'); olist.innerHTML='';
+  orders.forEach(o=>{
+    let li=document.createElement('li'); 
+    li.innerHTML=`${o.service} ${o.sub?'- '+o.sub:''} ${o.food?'- '+o.food:''} - <a href="${o.address}" target="_blank">Map</a>`; 
+    olist.appendChild(li);
+  });
+}
+
+// Use My Current Location
+let confirmedMapLinkFood = '';
+function useFoodLocation(){
+  const btn = document.getElementById('useLocationBtn');
+  // Highlight animation
+  btn.style.transform = 'scale(1.2)';
+  btn.style.boxShadow = '0 0 15px #1e73be';
+  setTimeout(()=>{
+    btn.style.transform = 'scale(1)';
+    btn.style.boxShadow = 'none';
+  }, 300);
+  document.getElementById('manualAddressFood').style.display = 'none';
+  detectLocation((link)=>{
+    confirmedMapLinkFood = link;
+    document.getElementById('mapConfirm').innerHTML = `<a href="${link}" target="_blank">Confirm Map</a>`;
+  });
 }
 
 function detectLocation(callback){
@@ -223,119 +355,17 @@ function detectLocation(callback){
   }
 }
 
-// Open pages
-function openFoodPage(){show('foodPage');updateCart();}
-function openServicePage(service){document.getElementById('serviceTitle').innerText=service;show('servicePage');}
-
-// Book Food
-function bookFood(){
-  if(document.getElementById('useCurrentLocationFood').checked==false){
-    let manual=document.getElementById('manualAddressFood').value;
-    if(!manual){alert('Enter address or use current location'); return;}
-    confirmedMapLinkFood=`https://www.google.com/maps?q=${encodeURIComponent(manual)}`;
-  }
-  let selectedFood=[];
-  for(let k in foodCart) if(foodCart[k]>0) selectedFood.push(k+' x'+foodCart[k]);
-  if(selectedFood.length===0){alert('Select at least one item'); return;}
-  let name=prompt("Enter your name");
-  let phone=prompt("Enter your phone number");
-  if(!name||!phone){alert("Name & phone required"); return;}
-  let orders=JSON.parse(localStorage.getItem('orders')||'[]');
-  orders.push({service:'Food',items:selectedFood.join(', '),name,phone,map:confirmedMapLinkFood});
-  localStorage.setItem('orders',JSON.stringify(orders));
-  alert('Order Booked 🚀: '+selectedFood.join(', '));
-  animateRocket();
-  foodCart={}; foodMenu.forEach(item=>foodCart[item.name]=0);
-  document.querySelectorAll('#foodPage span[id^="qty_"]').forEach(s=>s.innerText=0);
-  updateCart();
-  if(document.getElementById('panel')?.style.display==='block') updateAdminOrders();
-}
-
-// Book Generic Service
-function bookService(){
-  if(document.getElementById('useCurrentLocationService').checked==false){
-    let manual=document.getElementById('manualAddressService').value;
-    if(!manual){alert('Enter address or use current location'); return;}
-    confirmedMapLinkService=`https://www.google.com/maps?q=${encodeURIComponent(manual)}`;
-  }
-  let name=document.getElementById('sname').value;
-  let phone=document.getElementById('sphone').value;
-  let address=document.getElementById('saddress').value;
-  let service=document.getElementById('serviceTitle').innerText;
-  let sub=document.getElementById('serviceType').value;
-  if(!name||!phone){alert('Fill all fields'); return;}
-  let orders=JSON.parse(localStorage.getItem('orders')||'[]');
-  orders.push({service,sub,name,phone,address,map:confirmedMapLinkService});
-  localStorage.setItem('orders',JSON.stringify(orders));
-  alert('Order Booked 🚀: '+service+' - '+sub);
-  animateRocket();
-  if(document.getElementById('panel')?.style.display==='block') updateAdminOrders();
-}
-
-// Worker
+// Worker subcategories
 function updateWorkerType(){
   let service=document.getElementById('wservice').value;
   let sub=document.getElementById('wsubcategory'); sub.innerHTML='';
-  if(service==='Food'||service==='Grocery'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
+  if(service==='Food'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
+  else if(service==='Grocery'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
   else{sub.innerHTML=`<option>Installation</option><option>Repair</option>`;}
 }
 
-function registerWorker(){
-  let wname=document.getElementById('wname').value;
-  let wphone=document.getElementById('wphone').value;
-  let wservice=document.getElementById('wservice').value;
-  let wsub=document.getElementById('wsubcategory').value;
-  let waddress=document.getElementById('waddress').value;
-  if(!wname||!wphone){alert('Fill all fields'); return;}
-  let workers=JSON.parse(localStorage.getItem('workers')||'[]');
-  workers.push({name:wname,phone:wphone,service:wservice,sub:wsub,address:waddress,map:confirmedMapLinkWorker});
-  localStorage.setItem('workers',JSON.stringify(workers));
-  alert('Worker Registered 👍');
-  if(document.getElementById('panel').style.display==='block') updateAdminWorkers();
-}
-
-// Admin
-function login(){
-  if(document.getElementById('pass').value==='Swetha@149'){
-    document.getElementById('panel').style.display='block';
-    updateAdminWorkers();
-    updateAdminOrders();
-  }else alert('Wrong Password');
-}
-function updateAdminWorkers(){
-  let workers=JSON.parse(localStorage.getItem('workers')||'[]');
-  let wlist=document.getElementById('workerList'); wlist.innerHTML='';
-  workers.forEach(w=>{
-    let li=document.createElement('li');
-    li.innerHTML=`${w.name} | ${w.phone} | ${w.service} | <a href="${w.map}" target="_blank">Map</a>`;
-    wlist.appendChild(li);
-  });
-}
-function updateAdminOrders(){
-  let orders=JSON.parse(localStorage.getItem('orders')||'[]');
-  let olist=document.getElementById('orderList'); olist.innerHTML='';
-  orders.forEach(o=>{
-    let li=document.createElement('li');
-    li.innerHTML=`${o.service} ${o.sub?'- '+o.sub:''} ${o.items?'- '+o.items:''} | <a href="${o.map}" target="_blank">Map</a>`;
-    olist.appendChild(li);
-  });
-}
-
-// Rocket animation
-function animateRocket(){
-  const rocketContainer=document.getElementById('rocketContainer');
-  const fire=document.getElementById('fire');
-  const sound=document.getElementById('rocketSound');
-  rocketContainer.style.bottom='10px'; rocketContainer.style.display='block';
-  fire.style.opacity=1; sound.currentTime=0; sound.play();
-  let pos=10; let fireAnim=0;
-  let interval=setInterval(()=>{
-    pos+=15; rocketContainer.style.bottom=pos+'px';
-    fire.style.transform=`translateX(-50%) translateY(${Math.sin(fireAnim)*5}px)`;
-    fireAnim+=0.3;
-    if(pos>window.innerHeight){clearInterval(interval);rocketContainer.style.display='none';}
-  },30);
-}
+// Initialize
+window.onload=function(){updateWorkerType();}
 </script>
 </body>
-  </html>
+</html>
