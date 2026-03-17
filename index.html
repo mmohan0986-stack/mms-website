@@ -5,184 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MMS Ultra App</title>
 <style>
-body{
-  font-family: Arial,sans-serif;
-  margin:0;
-  background:#eef2f7;
-  min-height:100vh;
-  overflow-y:auto;
-}
-header{
-  background:#1e73be;
-  color:white;
-  text-align:center;
-  padding:15px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
-  font-size:20px;
-  font-weight:bold;
-}
-.section{
-  display:none;
-  padding:20px;
-  animation:fade 0.5s;
-  max-height:none;
-  overflow:visible;
-}
+body{font-family:Arial,sans-serif;margin:0;background:#eef2f7;min-height:100vh;overflow-y:auto;}
+header{background:#1e73be;color:white;text-align:center;padding:15px;box-shadow:0 2px 6px rgba(0,0,0,0.1);font-size:20px;font-weight:bold;}
+.section{display:none;padding:20px;animation:fade 0.5s;max-height:none;overflow:visible;}
 .active{display:block;}
 @keyframes fade{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-.card{
-  background:white;
-  margin:10px;
-  padding:20px;
-  border-radius:15px;
-  text-align:center;
-  box-shadow:0 3px 8px rgba(0,0,0,0.1);
-  transition:transform 0.3s,box-shadow 0.3s;
-}
-.card:hover{
-  transform:scale(1.05);
-  box-shadow:0 8px 16px rgba(0,0,0,0.2);
-  cursor:pointer;
-}
-input,select{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-  border-radius:10px;
-  border:1px solid #ccc;
-  outline:none;
-}
-button{
-  background:#1e73be;
-  color:white;
-  border:none;
-  padding:10px;
-  border-radius:10px;
-  width:100%;
-  margin-top:10px;
-  transition:0.2s;
-}
-button:hover{
-  transform:scale(1.05);
-  cursor:pointer;
-}
-nav{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  background:white;
-  display:flex;
-  justify-content:space-around;
-  padding:10px 0;
-  box-shadow:0 -2px 8px rgba(0,0,0,0.1);
-}
-nav button{
-  background:none;
-  border:none;
-  font-size:18px;
-  color:#1e73be;
-}
+.card{background:white;margin:10px;padding:20px;border-radius:15px;text-align:center;box-shadow:0 3px 8px rgba(0,0,0,0.1);transition:transform 0.3s,box-shadow 0.3s;}
+.card:hover{transform:scale(1.05);box-shadow:0 8px 16px rgba(0,0,0,0.2);cursor:pointer;}
+input,select{width:100%;padding:10px;margin:10px 0;border-radius:10px;border:1px solid #ccc;outline:none;}
+button{background:#1e73be;color:white;border:none;padding:10px;border-radius:10px;width:100%;margin-top:10px;transition:0.2s;}
+button:hover{transform:scale(1.05);cursor:pointer;}
+nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-content:space-around;padding:10px 0;box-shadow:0 -2px 8px rgba(0,0,0,0.1);}
+nav button{background:none;border:none;font-size:18px;color:#1e73be;}
 nav button:hover{transform:scale(1.2);}
-#cart{
-  max-height:250px;
-  overflow-y:auto;
-  border:1px solid #ccc;
-  padding:5px;
-  border-radius:10px;
-  background:#f9f9f9;
-  margin-top:10px;
-  transition:all 0.3s ease;
-}
-#cart div{
-  display:flex;
-  justify-content:space-between;
-  margin:5px 0;
-  padding:5px;
-  background:#fff;
-  border-radius:5px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.05);
-  animation:fadeItem 0.3s;
-}
-@keyframes fadeItem{from{opacity:0;}to{opacity:1;}}
-#rocketContainer{
-  position:fixed;
-  bottom:10px;
-  left:50%;
-  transform:translateX(-50%);
-  display:none;
-  pointer-events:none;
-  z-index:999;
-}
+#cart{max-height:250px;overflow-y:auto;border:1px solid #ccc;padding:5px;border-radius:10px;background:#f9f9f9;margin-top:10px;}
+#cart div{display:flex;justify-content:space-between;margin:5px 0;padding:5px;background:#fff;border-radius:5px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+#rocketContainer{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:none;pointer-events:none;z-index:999;}
 #rocket{font-size:50px;}
 #fire{position:absolute;top:50px;left:50%;transform:translateX(-50%);font-size:25px;opacity:0.8;}
-.food-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#fff;
-  border-radius:10px;
-  padding:10px;
-  margin:10px 0;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
-  transition:transform 0.3s;
-}
-.food-item:hover{transform:scale(1.02);}
-.food-name{
-  font-weight:bold;
-  font-size:16px;
-}
-.qty-box{
-  display:flex;
-  width:70px;
-  height:35px;
-  border-radius:8px;
-  overflow:hidden;
-}
-.qty-box div{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:18px;
-  color:white;
-  background:#1e73be;
-  cursor:pointer;
-  user-select:none;
-  transition:0.2s;
-}
+.food-item{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:10px;padding:10px;margin:10px 0;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+.food-name{font-weight:bold;font-size:16px;}
+.qty-box{display:flex;width:70px;height:35px;border-radius:8px;overflow:hidden;}
+.qty-box div{flex:1;display:flex;align-items:center;justify-content:center;font-size:18px;color:white;background:#1e73be;cursor:pointer;}
 .qty-box div:hover{background:#155a9c;}
-.qty-count{
-  margin-left:10px;
-  font-weight:bold;
-}
-#locationBtn,#wlocBtn{
-  background:#ff6f61;
-  margin-top:0;
-}
-.map-preview{
-  width:100%;
-  height:150px;
-  border-radius:10px;
-  margin:10px 0;
-}
-#foodPage{
-  display:none;
-  padding:20px;
-  animation:fade 0.5s;
-  max-height:calc(100vh - 80px);
-  overflow-y:auto;
-}
-@media(max-width:600px){
-  #foodList,#cart{font-size:14px;}
-  button{padding:12px;}
-  .map-preview{height:120px;}
-}
+.qty-count{margin-left:10px;font-weight:bold;}
+#locationBtn,#wlocBtn{background:#ff6f61;margin-top:0;}
+.map-preview{width:100%;height:150px;border-radius:10px;margin:10px 0;}
+@media(max-width:600px){#foodList,#cart{font-size:14px;}button{padding:12px;}.map-preview{height:120px;}}
 </style>
 </head>
 <body>
 
 <header>MMS</header>
 
+<!-- Home -->
 <div id="home" class="section active">
 <h2>Welcome 👋</h2>
 <p>All-in-One Services</p>
@@ -194,6 +50,7 @@ nav button:hover{transform:scale(1.2);}
 </div>
 </div>
 
+<!-- Services -->
 <div id="services" class="section">
 <h2>Services</h2>
 <div class="card" onclick="openFoodPage()">🍔 Food</div>
@@ -202,6 +59,7 @@ nav button:hover{transform:scale(1.2);}
 <div class="card" onclick="openServicePage('Mechanic')">🔧 Mechanic</div>
 </div>
 
+<!-- Food Page -->
 <div id="foodPage" class="section">
 <h2>Food Menu</h2>
 <div id="foodList"></div>
@@ -210,6 +68,7 @@ nav button:hover{transform:scale(1.2);}
 <button onclick="bookFood()">Book Now</button>
 </div>
 
+<!-- Service Page -->
 <div id="servicePage" class="section">
 <h2 id="serviceTitle"></h2>
 <select id="serviceType"></select>
@@ -221,6 +80,7 @@ nav button:hover{transform:scale(1.2);}
 <button onclick="bookService()">Book Now</button>
 </div>
 
+<!-- Worker -->
 <div id="worker" class="section">
 <h2>Worker Registration</h2>
 <input id="wname" placeholder="Name">
@@ -238,6 +98,7 @@ nav button:hover{transform:scale(1.2);}
 <button onclick="registerWorker()">Register Worker</button>
 </div>
 
+<!-- Admin -->
 <div id="admin" class="section">
 <h2>Admin</h2>
 <input type="password" id="pass" placeholder="Password">
@@ -265,8 +126,26 @@ nav button:hover{transform:scale(1.2);}
 </nav>
 
 <script>
-// JS logic same as earlier – all food, cart, book, worker, admin, rocket, location
-// For brevity I skipped repeating JS here, use previous script from last message (full functionality)
+// Sections
+function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+
+// Food Menu
+let foodMenu=[{name:"Pizza",price:250},{name:"Burger",price:120},{name:"Sandwich",price:100},{name:"Pasta",price:180},{name:"Fried Rice",price:150},{name:"French Fries",price:80},{name:"Noodles",price:120},{name:"Cake",price:200},{name:"Ice Cream",price:90},{name:"Samosa",price:40}];
+let foodCart={};foodMenu.forEach(item=>foodCart[item.name]=0);
+const foodList=document.getElementById('foodList');
+function updateCart(){const cartDiv=document.getElementById('cart');cartDiv.innerHTML='';for(let k in foodCart){if(foodCart[k]>0){let d=document.createElement('div');d.textContent=`${k} x${foodCart[k]}`;cartDiv.appendChild(d);}}}
+foodMenu.forEach(item=>{let div=document.createElement('div');div.className='food-item';div.innerHTML=`<span class="food-name">${item.name} - ₹${item.price}</span><div class="qty-box"><div onclick="changeQty('${item.name}',-1)">−</div><div class="qty-count" id="qty_${item.name}">0</div><div onclick="changeQty('${item.name}',1)">+</div></div>`;foodList.appendChild(div);});
+function changeQty(item,delta){foodCart[item]+=delta;if(foodCart[item]<0) foodCart[item]=0;document.getElementById('qty_'+item).innerText=foodCart[item];updateCart();}
+function openFoodPage(){show('foodPage');updateCart();}
+
+// Service
+function openServicePage(service){document.getElementById('serviceTitle').innerText=service;const typeSelect=document.getElementById('serviceType');typeSelect.innerHTML='';if(service==='Grocery'){typeSelect.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}else if(service==='Electrician'||service==='Mechanic'){typeSelect.innerHTML=`<option>Installation</option><option>Repair</option>`;}show('servicePage');}
+
+// Rocket animation
+function animateRocket(){const rocketContainer=document.getElementById('rocketContainer');const fire=document.getElementById('fire');const sound=document.getElementById('rocketSound');rocketContainer.style.bottom='10px';rocketContainer.style.display='block';fire.style.opacity=1;sound.currentTime=0;sound.play();let pos=10;let fireAnim=0;let interval=setInterval(()=>{pos+=15;rocketContainer.style.bottom=pos+'px';fire.style.transform=`translateX(-50%) translateY(${Math.sin(fireAnim)*5}px)`;fireAnim+=0.3;if(pos>window.innerHeight){clearInterval(interval);rocketContainer.style.display='none';}},30);}
+
+// JS for booking, workers, admin, location...
+window.onload=function(){updateWorkerType();}
 </script>
 
 </body>
