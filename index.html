@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MMS Ultra App</title>
+<title>MMS</title>
 <style>
 body{font-family:Arial,sans-serif;margin:0;background:#eef2f7;overflow-y:auto;}
 header{text-align:center;padding:15px;color:white;background:#1e73be;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
@@ -24,6 +24,8 @@ nav button:hover{transform:scale(1.2);}
 #rocket{font-size:50px;}
 #fire{position:absolute;top:50px;left:50%;transform:translateX(-50%);font-size:25px;opacity:0.8;}
 #mapConfirm,#mapConfirmService,#mapConfirmWorker{font-size:12px;margin-top:5px;}
+#foodList div{display:flex;justify-content:space-between;align-items:center;margin:10px 0;padding:10px;background:white;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+#foodList span{margin:0 5px;}
 #splash{position:fixed;top:0;left:0;width:100%;height:100%;background:#1e73be;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;}
 #splash h1{font-size:50px;margin:0;}
 #splash p{font-size:20px;}
@@ -38,7 +40,7 @@ nav button:hover{transform:scale(1.2);}
   <p>"All services, One place"</p>
 </div>
 
-<header>MMS Ultra App</header>
+<header>MMS</header>
 
 <!-- Home -->
 <div id="home" class="section active">
@@ -63,23 +65,29 @@ nav button:hover{transform:scale(1.2);}
 
 <!-- Food Page -->
 <div id="foodPage" class="section">
-<h2>Food Menu</h2>
-<div id="foodList"></div>
-<div id="mapConfirm"></div>
-<h3>Cart</h3>
-<div id="cart"></div>
 <button onclick="bookFood()">Book Now</button>
+<div>
+<label><input type="checkbox" id="useCurrentLocationFood" onclick="handleFoodLocation()"> Use My Current Location</label>
+</div>
+<input id="manualAddressFood" placeholder="Enter address manually" style="display:none;">
+<div id="foodList"></div>
+<div id="cart"></div>
+<div id="mapConfirm"></div>
 </div>
 
 <!-- Generic Service Page -->
 <div id="servicePage" class="section">
+<button onclick="bookService()">Book Now</button>
+<div>
+<label><input type="checkbox" id="useCurrentLocationService" onclick="handleServiceLocation()"> Use My Current Location</label>
+</div>
+<input id="manualAddressService" placeholder="Enter address manually" style="display:none;">
 <h2 id="serviceTitle"></h2>
 <select id="serviceType"></select>
 <input id="sname" placeholder="Name">
 <input id="sphone" placeholder="Mobile Number">
 <input id="saddress" placeholder="Address">
 <div id="mapConfirmService"></div>
-<button onclick="bookService()">Book Now</button>
 </div>
 
 <!-- Worker -->
@@ -96,6 +104,7 @@ nav button:hover{transform:scale(1.2);}
 <select id="wsubcategory"></select>
 <input id="waddress" placeholder="Address">
 <div id="mapConfirmWorker"></div>
+<label><input type="checkbox" id="useCurrentLocationWorker" onclick="handleWorkerLocation()"> Use My Current Location</label>
 <button onclick="registerWorker()">Register Worker</button>
 </div>
 
@@ -136,27 +145,31 @@ function show(id){
   document.getElementById(id).classList.add('active');
 }
 
-// Food Menu
+// Food menu
 let foodMenu=[
 {name:"Pizza",price:250},{name:"Burger",price:120},{name:"Sandwich",price:100},{name:"Pasta",price:180},{name:"Fried Rice",price:150},
 {name:"French Fries",price:80},{name:"Noodles",price:120},{name:"Cake",price:200},{name:"Ice Cream",price:90},{name:"Samosa",price:40}
 ];
 let foodCart={};
 foodMenu.forEach(item=>foodCart[item.name]=0);
-
 const foodList=document.getElementById('foodList');
+
 function updateCart(){
   const cartDiv=document.getElementById('cart'); cartDiv.innerHTML='';
   for(let k in foodCart){if(foodCart[k]>0){let d=document.createElement('div');d.textContent=`${k} x${foodCart[k]}`;cartDiv.appendChild(d);}}
 }
+
+// Build food boxes
 foodMenu.forEach(item=>{
   let div=document.createElement('div');
-  div.innerHTML=`<span>${item.name} - ₹${item.price}</span>
-    <span>
-    <button onclick="changeQty('${item.name}',-1)">−</button>
-    <span id="qty_${item.name}">0</span>
-    <button onclick="changeQty('${item.name}',1)">+</button>
-    </span>`;
+  div.innerHTML=`
+  <div style="flex:1">${item.name} - ₹${item.price}</div>
+  <div style="display:flex;gap:5px;">
+  <button onclick="changeQty('${item.name}',1)">+</button>
+  <span id="qty_${item.name}">0</span>
+  <button onclick="changeQty('${item.name}',-1)">−</button>
+  </div>
+  `;
   foodList.appendChild(div);
 });
 
@@ -167,46 +180,68 @@ function changeQty(item,delta){
   updateCart();
 }
 
-// Map Detection
-let confirmedMapLink="";
-function detectLocation(mapDivId){
+// Map detection helpers
+let confirmedMapLinkFood="",confirmedMapLinkService="",confirmedMapLinkWorker="";
+function handleFoodLocation(){
+  let checkbox=document.getElementById('useCurrentLocationFood');
+  let manual=document.getElementById('manualAddressFood');
+  if(checkbox.checked){
+    manual.style.display='none';
+    detectLocation((link)=>{confirmedMapLinkFood=link;document.getElementById('mapConfirm').innerHTML=`🌍 <a href="${link}" target="_blank">Confirm Map</a>`;});
+  } else manual.style.display='block';
+}
+function handleServiceLocation(){
+  let checkbox=document.getElementById('useCurrentLocationService');
+  let manual=document.getElementById('manualAddressService');
+  if(checkbox.checked){
+    manual.style.display='none';
+    detectLocation((link)=>{confirmedMapLinkService=link;document.getElementById('mapConfirmService').innerHTML=`🌍 <a href="${link}" target="_blank">Confirm Map</a>`;});
+  } else manual.style.display='block';
+}
+function handleWorkerLocation(){
+  let checkbox=document.getElementById('useCurrentLocationWorker');
+  let manual=document.getElementById('waddress');
+  if(checkbox.checked){manual.readOnly=true;detectLocation((link)=>{confirmedMapLinkWorker=link;document.getElementById('mapConfirmWorker').innerHTML=`🌍 <a href="${link}" target="_blank">Confirm Map</a>`;});}
+  else manual.readOnly=false;
+}
+
+function detectLocation(callback){
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(
       (pos)=>{
         let lat=pos.coords.latitude, lon=pos.coords.longitude;
-        confirmedMapLink=`https://www.google.com/maps?q=${lat},${lon}`;
-        document.getElementById(mapDivId).innerHTML=`🌍 <a href="${confirmedMapLink}" target="_blank">Confirm Map</a>`;
+        callback(`https://www.google.com/maps?q=${lat},${lon}`);
       },
       ()=>{
         let manualAddr = prompt("Location not detected. Enter manually:");
-        confirmedMapLink=`https://www.google.com/maps?q=${encodeURIComponent(manualAddr)}`;
-        document.getElementById(mapDivId).innerHTML=`🌍 <a href="${confirmedMapLink}" target="_blank">Confirm Map</a>`;
+        callback(`https://www.google.com/maps?q=${encodeURIComponent(manualAddr)}`);
       }
     );
   } else {
     let manualAddr = prompt("Geolocation not supported. Enter manually:");
-    confirmedMapLink=`https://www.google.com/maps?q=${encodeURIComponent(manualAddr)}`;
-    document.getElementById(mapDivId).innerHTML=`🌍 <a href="${confirmedMapLink}" target="_blank">Confirm Map</a>`;
+    callback(`https://www.google.com/maps?q=${encodeURIComponent(manualAddr)}`);
   }
 }
 
-// Open Food Page
-function openFoodPage(){
-  show('foodPage'); updateCart();
-  detectLocation('mapConfirm');
-}
+// Open pages
+function openFoodPage(){show('foodPage');updateCart();}
+function openServicePage(service){document.getElementById('serviceTitle').innerText=service;show('servicePage');}
 
 // Book Food
 function bookFood(){
-  if(!confirmedMapLink){ alert("Location not detected!"); return; }
+  if(document.getElementById('useCurrentLocationFood').checked==false){
+    let manual=document.getElementById('manualAddressFood').value;
+    if(!manual){alert('Enter address or use current location'); return;}
+    confirmedMapLinkFood=`https://www.google.com/maps?q=${encodeURIComponent(manual)}`;
+  }
   let selectedFood=[];
-  for(let k in foodCart){if(foodCart[k]>0) selectedFood.push(k+' x'+foodCart[k]);}
+  for(let k in foodCart) if(foodCart[k]>0) selectedFood.push(k+' x'+foodCart[k]);
   if(selectedFood.length===0){alert('Select at least one item'); return;}
   let name=prompt("Enter your name");
-  let phone=prompt("Enter your mobile number");
+  let phone=prompt("Enter your phone number");
   if(!name||!phone){alert("Name & phone required"); return;}
   let orders=JSON.parse(localStorage.getItem('orders')||'[]');
-  orders.push({service:'Food',items:selectedFood.join(', '),name:name,phone:phone,map:confirmedMapLink});
+  orders.push({service:'Food',items:selectedFood.join(', '),name,phone,map:confirmedMapLinkFood});
   localStorage.setItem('orders',JSON.stringify(orders));
   alert('Order Booked 🚀: '+selectedFood.join(', '));
   animateRocket();
@@ -216,19 +251,13 @@ function bookFood(){
   if(document.getElementById('panel')?.style.display==='block') updateAdminOrders();
 }
 
-// Generic Service Page
-function openServicePage(service){
-  document.getElementById('serviceTitle').innerText=service;
-  const typeSelect=document.getElementById('serviceType'); typeSelect.innerHTML='';
-  if(service==='Grocery'){typeSelect.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
-  else if(service==='Electrician'||service==='Mechanic'){typeSelect.innerHTML=`<option>Installation</option><option>Repair</option>`;}
-  show('servicePage');
-  detectLocation('mapConfirmService');
-}
-
-// Book Service
+// Book Generic Service
 function bookService(){
-  if(!confirmedMapLink){alert("Location not detected!"); return;}
+  if(document.getElementById('useCurrentLocationService').checked==false){
+    let manual=document.getElementById('manualAddressService').value;
+    if(!manual){alert('Enter address or use current location'); return;}
+    confirmedMapLinkService=`https://www.google.com/maps?q=${encodeURIComponent(manual)}`;
+  }
   let name=document.getElementById('sname').value;
   let phone=document.getElementById('sphone').value;
   let address=document.getElementById('saddress').value;
@@ -236,7 +265,7 @@ function bookService(){
   let sub=document.getElementById('serviceType').value;
   if(!name||!phone){alert('Fill all fields'); return;}
   let orders=JSON.parse(localStorage.getItem('orders')||'[]');
-  orders.push({service,sub,name,phone,address,map:confirmedMapLink});
+  orders.push({service,sub,name,phone,address,map:confirmedMapLinkService});
   localStorage.setItem('orders',JSON.stringify(orders));
   alert('Order Booked 🚀: '+service+' - '+sub);
   animateRocket();
@@ -249,7 +278,6 @@ function updateWorkerType(){
   let sub=document.getElementById('wsubcategory'); sub.innerHTML='';
   if(service==='Food'||service==='Grocery'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
   else{sub.innerHTML=`<option>Installation</option><option>Repair</option>`;}
-  detectLocation('mapConfirmWorker'); // detect worker location
 }
 
 function registerWorker(){
@@ -260,7 +288,7 @@ function registerWorker(){
   let waddress=document.getElementById('waddress').value;
   if(!wname||!wphone){alert('Fill all fields'); return;}
   let workers=JSON.parse(localStorage.getItem('workers')||'[]');
-  workers.push({name:wname,phone:wphone,service:wservice,sub:wsub,address:waddress,map:confirmedMapLink});
+  workers.push({name:wname,phone:wphone,service:wservice,sub:wsub,address:waddress,map:confirmedMapLinkWorker});
   localStorage.setItem('workers',JSON.stringify(workers));
   alert('Worker Registered 👍');
   if(document.getElementById('panel').style.display==='block') updateAdminWorkers();
@@ -274,7 +302,6 @@ function login(){
     updateAdminOrders();
   }else alert('Wrong Password');
 }
-
 function updateAdminWorkers(){
   let workers=JSON.parse(localStorage.getItem('workers')||'[]');
   let wlist=document.getElementById('workerList'); wlist.innerHTML='';
@@ -309,9 +336,6 @@ function animateRocket(){
     if(pos>window.innerHeight){clearInterval(interval);rocketContainer.style.display='none';}
   },30);
 }
-
-// Initialize
-window.onload=function(){updateWorkerType();}
 </script>
 </body>
   </html>
