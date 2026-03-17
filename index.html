@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MMS</title>
 <style>
-body{font-family:Arial;margin:0;background:#eef2f7;transition:0.3s;}
+body{font-family:Arial,sans-serif;margin:0;background:#eef2f7;transition:0.3s;}
 header{background:#1e73be;color:white;text-align:center;padding:15px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
 .section{display:none;padding:20px;animation:fade 0.5s;}
 .active{display:block;}
@@ -28,12 +28,11 @@ nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-con
 nav button{background:none;border:none;font-size:18px;color:#1e73be;transition:transform 0.2s;}
 nav button:hover{transform:scale(1.2);}
 
-/* Food dropdown */
-#foodSelect{width:100%;padding:10px;border-radius:10px;margin:10px 0;}
-#foodQtyDiv{display:none;margin:10px 0;justify-content:space-between;align-items:center;display:flex;}
-#foodQtyDiv button{padding:5px 10px;background:#1e73be;color:white;border:none;border-radius:5px;cursor:pointer;transition:0.2s;}
-#foodQtyDiv button:hover{background:#155a96;transform:scale(1.1);}
-#foodQty{min-width:20px;text-align:center;font-weight:bold;}
+/* Food menu */
+#foodList div{display:flex;justify-content:space-between;align-items:center;margin:8px 0;padding:10px;background:#f9f9f9;border-radius:10px;box-shadow:0 2px 4px rgba(0,0,0,0.1);font-size:16px;}
+#foodList button{padding:5px 10px;font-size:16px;margin:0 2px;border-radius:5px;background:#1e73be;color:white;border:none;cursor:pointer;transition:0.2s;}
+#foodList button:hover{background:#155a96;transform:scale(1.1);}
+#foodQty{min-width:20px;display:inline-block;text-align:center;font-weight:bold;}
 </style>
 </head>
 <body>
@@ -75,15 +74,8 @@ nav button:hover{transform:scale(1.2);}
 </select>
 <select id="subcategory"></select>
 
-<!-- Food dropdown menu -->
-<select id="foodSelect" onchange="selectFood()">
-<option value="">Select Food Item</option>
-</select>
-<div id="foodQtyDiv">
-<button onclick="changeFoodQty(-1)">−</button>
-<span id="foodQty">0</span>
-<button onclick="changeFoodQty(1)">+</button>
-</div>
+<!-- Food items list with + / − -->
+<div id="foodList"></div>
 
 <input id="address" placeholder="Address">
 <button type="button" onclick="getLocation()">Use My Location</button>
@@ -140,74 +132,48 @@ nav button:hover{transform:scale(1.2);}
 <script>
 // Splash
 setTimeout(()=>{document.getElementById('splash').style.display='none';document.getElementById('home').classList.add('active');},2000);
-
-// Show section
 function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 
-// Food menu
-let foodMenu=[{name:"Pizza",price:250},{name:"Burger",price:120},{name:"Sandwich",price:100},{name:"Pasta",price:180},{name:"Fried Rice",price:150}];
-let foodCart={};
-foodMenu.forEach(item=>foodCart[item.name]=0);
+// Food menu setup
+let foodMenu = [
+  {name:"Pizza", price:250},
+  {name:"Burger", price:120},
+  {name:"Sandwich", price:100},
+  {name:"Pasta", price:180},
+  {name:"Fried Rice", price:150}
+];
+let foodCart = {};
+foodMenu.forEach(item => foodCart[item.name]=0);
 
-// Populate food dropdown
-const foodSelect=document.getElementById('foodSelect');
-foodMenu.forEach(item=>{
-  let opt=document.createElement('option');
-  opt.value=item.name;
-  opt.textContent=`${item.name} - ₹${item.price}`;
-  foodSelect.appendChild(opt);
-});
-let selectedFoodItem="";
-
-function selectFood(){
-  selectedFoodItem=foodSelect.value;
-  if(selectedFoodItem){
-    document.getElementById('foodQtyDiv').style.display='flex';
-    document.getElementById('foodQty').innerText=foodCart[selectedFoodItem];
-  } else document.getElementById('foodQtyDiv').style.display='none';
-}
-
-function changeFoodQty(delta){
-  if(!selectedFoodItem) return;
-  foodCart[selectedFoodItem]+=delta;
-  if(foodCart[selectedFoodItem]<0) foodCart[selectedFoodItem]=0;
-  document.getElementById('foodQty').innerText=foodCart[selectedFoodItem];
-}
-
-// Service selection
-function selectService(s){document.getElementById('service').value=s;updateType();show('booking');}
-
-// Booking subcategories
 function updateType(){
   let service=document.getElementById('service').value;
   let sub=document.getElementById('subcategory');
-  sub.innerHTML='';
-  if(service==='Food') sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;
-  else if(service==='Grocery') sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;
-  else sub.innerHTML=`<option>Installation</option><option>Repair</option>`;
+  let foodList=document.getElementById('foodList');
+  sub.innerHTML=''; foodList.innerHTML=''; foodList.style.display='none';
+  if(service==='Food'){
+    sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;
+    foodList.style.display='block';
+    foodMenu.forEach(item=>{
+      let div=document.createElement('div');
+      div.innerHTML=`<span>${item.name} - ₹${item.price}</span>
+        <span>
+        <button onclick="changeFoodQty('${item.name}',-1)">−</button>
+        <span id="qty_${item.name}">0</span>
+        <button onclick="changeFoodQty('${item.name}',1)">+</button>
+        </span>`;
+      foodList.appendChild(div);
+    });
+  } else if(service==='Grocery'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
+  else{sub.innerHTML=`<option>Installation</option><option>Repair</option>`;}
 }
 
-// Location
-function getLocation(){if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{let lat=p.coords.latitude,lon=p.coords.longitude;document.getElementById('address').value=`Lat: ${lat}, Lon: ${lon}`;document.getElementById('map').innerHTML=`<iframe width="100%" height="200" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;});}else alert('Location not supported');}
-function getWorkerLocation(){if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{let lat=p.coords.latitude,lon=p.coords.longitude;document.getElementById('waddress').value=`Lat: ${lat}, Lon: ${lon}`;document.getElementById('wmap').innerHTML=`<iframe width="100%" height="200" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;});}else alert('Location not supported');}
-
-// Rocket animation
-function animateRocket(){
-  const rocketContainer=document.getElementById('rocketContainer');
-  const fire=document.getElementById('fire');
-  const sound=document.getElementById('rocketSound');
-  rocketContainer.style.bottom='10px'; rocketContainer.style.display='block';
-  fire.style.opacity=1; sound.currentTime=0; sound.play();
-  let pos=10; let fireAnim=0;
-  let interval=setInterval(()=>{
-    pos+=15; rocketContainer.style.bottom=pos+'px';
-    fire.style.transform=`translateX(-50%) translateY(${Math.sin(fireAnim)*5}px)`;
-    fireAnim+=0.3;
-    if(pos>window.innerHeight){clearInterval(interval);rocketContainer.style.display='none';}
-  },30);
+function changeFoodQty(item,delta){
+  foodCart[item]+=delta;
+  if(foodCart[item]<0) foodCart[item]=0;
+  document.getElementById('qty_'+item).innerText=foodCart[item];
 }
 
-// Book service
+// Booking
 function book(){
   let name=document.getElementById('name').value;
   let phone=document.getElementById('phone').value;
@@ -216,8 +182,10 @@ function book(){
   let address=document.getElementById('address').value;
   if(!name||!phone||!address){alert('Fill Name, Phone & Address'); return;}
   let selectedFood=[];
-  for(let k in foodCart){if(foodCart[k]>0) selectedFood.push(k+' x'+foodCart[k]);}
-  if(service==='Food' && selectedFood.length===0){alert('Select at least one food item'); return;}
+  if(service==='Food'){
+    for(let k in foodCart){if(foodCart[k]>0) selectedFood.push(k+' x'+foodCart[k]);}
+    if(selectedFood.length===0){alert('Select at least one food item'); return;}
+  }
   let orders=JSON.parse(localStorage.getItem('orders')||'[]');
   orders.push({name,phone,service,sub,address,food:selectedFood.join(', ')});
   localStorage.setItem('orders',JSON.stringify(orders));
@@ -241,7 +209,6 @@ function registerWorker(){
   if(document.getElementById('panel').style.display==='block') updateAdminWorkers();
 }
 
-// Admin
 function login(){if(document.getElementById('pass').value==='Swetha@149'){document.getElementById('panel').style.display='block';updateAdminWorkers();updateAdminOrders();}else alert('Wrong Password');}
 function updateAdminWorkers(){let workers=JSON.parse(localStorage.getItem('workers')||'[]');let wlist=document.getElementById('workerList');wlist.innerHTML='';workers.forEach(w=>{let mapLink=w.address.includes('Lat:')?`https://www.google.com/maps?q=${w.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/)[1]},${w.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/)[2]}`:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(w.address)}`;let li=document.createElement('li');li.innerHTML=`${w.name} | ${w.phone} | ${w.service} - ${w.sub} | ${w.address} <a href='${mapLink}' target='_blank'>📍Map</a>`;wlist.appendChild(li);});}
 function updateAdminOrders(){let orders=JSON.parse(localStorage.getItem('orders')||'[]');let olist=document.getElementById('orderList');olist.innerHTML='';orders.forEach(o=>{let mapLink=o.address.includes('Lat:')?`https://www.google.com/maps?q=${o.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/)[1]},${o.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/)[2]}`:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}`;let li=document.createElement('li');li.innerHTML=`${o.name} | ${o.phone} | ${o.service} ${o.food?'- '+o.food:''} - ${o.sub} | ${o.address} <a href='${mapLink}' target='_blank'>📍Map</a>`;olist.appendChild(li);});}
@@ -254,9 +221,29 @@ function updateWorkerType(){
   else{sub.innerHTML=`<option>Installation</option><option>Repair</option>`;}
 }
 
+// Location
+function getLocation(){if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{let lat=p.coords.latitude,lon=p.coords.longitude;document.getElementById('address').value=`Lat: ${lat}, Lon: ${lon}`;document.getElementById('map').innerHTML=`<iframe width="100%" height="200" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;});}else alert('Location not supported');}
+function getWorkerLocation(){if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{let lat=p.coords.latitude,lon=p.coords.longitude;document.getElementById('waddress').value=`Lat: ${lat}, Lon: ${lon}`;document.getElementById('wmap').innerHTML=`<iframe width="100%" height="200" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;});}else alert('Location not supported');}
+
+// Rocket animation
+function animateRocket(){
+  const rocketContainer=document.getElementById('rocketContainer');
+  const fire=document.getElementById('fire');
+  const sound=document.getElementById('rocketSound');
+  rocketContainer.style.bottom='10px'; rocketContainer.style.display='block';
+  fire.style.opacity=1; sound.currentTime=0; sound.play();
+  let pos=10; let fireAnim=0;
+  let interval=setInterval(()=>{
+    pos+=15; rocketContainer.style.bottom=pos+'px';
+    fire.style.transform=`translateX(-50%) translateY(${Math.sin(fireAnim)*5}px)`;
+    fireAnim+=0.3;
+    if(pos>window.innerHeight){clearInterval(interval);rocketContainer.style.display='none';}
+  },30);
+}
+
 // Onload defaults
 window.onload=function(){updateType();updateWorkerType();}
 </script>
 
 </body>
-</html>
+                                   </html>
