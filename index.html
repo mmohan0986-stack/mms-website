@@ -18,7 +18,7 @@ button:hover{transform:scale(1.05);cursor:pointer;}
 nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-content:space-around;padding:10px 0;box-shadow:0 -2px 8px rgba(0,0,0,0.1);}
 nav button{background:none;border:none;font-size:18px;color:#1e73be;}
 nav button:hover{transform:scale(1.2);}
-#cart{max-height:250px;overflow-y:auto;border:1px solid #ccc;padding:5px;border-radius:10px;background:#f9f9f9;margin-top:10px;}
+#cart{max-height:200px;overflow-y:auto;border:1px solid #ccc;padding:5px;border-radius:10px;background:#f9f9f9;margin-top:10px;}
 #cart div{display:flex;justify-content:space-between;margin:5px 0;padding:5px;background:#fff;border-radius:5px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
 #rocketContainer{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:none;pointer-events:none;z-index:999;}
 #rocket{font-size:50px;}
@@ -61,11 +61,11 @@ nav button:hover{transform:scale(1.2);}
 
 <!-- Food Page -->
 <div id="foodPage" class="section">
+<button onclick="bookFood()" style="width:95%;margin:10px auto 10px auto;display:block;">Book Now</button>
 <h2>Food Menu</h2>
-<div id="foodList"></div>
+<div id="foodList" style="max-height:400px;overflow-y:auto;"></div>
 <h3>Cart</h3>
-<div id="cart"></div>
-<button onclick="bookFood()">Book Now</button>
+<div id="cart" style="max-height:200px;overflow-y:auto;"></div>
 </div>
 
 <!-- Service Page -->
@@ -75,8 +75,8 @@ nav button:hover{transform:scale(1.2);}
 <input id="sname" placeholder="Name">
 <input id="sphone" placeholder="Mobile Number">
 <input id="saddress" placeholder="Address">
-<button id="locationBtn" onclick="detectLocation()">📍 Detect My Location</button>
-<iframe id="mapFrame" class="map-preview" src="" style="display:none"></iframe>
+<button id="locationBtn" onclick="detectLocationGoogle('saddress','mapFrame')">📍 Detect My Location</button>
+<iframe id="mapFrame" class="map-preview" style="display:none;"></iframe>
 <button onclick="bookService()">Book Now</button>
 </div>
 
@@ -93,8 +93,8 @@ nav button:hover{transform:scale(1.2);}
 </select>
 <select id="wsubcategory"></select>
 <input id="waddress" placeholder="Address">
-<button id="wlocBtn" onclick="detectWorkerLocation()">📍 Detect Location</button>
-<iframe id="wMapFrame" class="map-preview" src="" style="display:none"></iframe>
+<button id="wlocBtn" onclick="detectLocationGoogle('waddress','wMapFrame')">📍 Detect Location</button>
+<iframe id="wMapFrame" class="map-preview" src="" style="display:none;"></iframe>
 <button onclick="registerWorker()">Register Worker</button>
 </div>
 
@@ -144,9 +144,80 @@ function openServicePage(service){document.getElementById('serviceTitle').innerT
 // Rocket animation
 function animateRocket(){const rocketContainer=document.getElementById('rocketContainer');const fire=document.getElementById('fire');const sound=document.getElementById('rocketSound');rocketContainer.style.bottom='10px';rocketContainer.style.display='block';fire.style.opacity=1;sound.currentTime=0;sound.play();let pos=10;let fireAnim=0;let interval=setInterval(()=>{pos+=15;rocketContainer.style.bottom=pos+'px';fire.style.transform=`translateX(-50%) translateY(${Math.sin(fireAnim)*5}px)`;fireAnim+=0.3;if(pos>window.innerHeight){clearInterval(interval);rocketContainer.style.display='none';}},30);}
 
-// JS for booking, workers, admin, location...
+// Google Maps Location
+function detectLocationGoogle(inputId,mapFrameId){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      (pos)=>{
+        const lat=pos.coords.latitude;
+        const lon=pos.coords.longitude;
+        document.getElementById(inputId).value=`https://www.google.com/maps?q=${lat},${lon}`;
+        const mapFrame=document.getElementById(mapFrameId);
+        mapFrame.src=`https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed`;
+        mapFrame.style.display='block';
+      },
+      ()=>{alert('Location access denied');}
+    );
+  } else alert('Geolocation not supported');
+}
+
+// Booking
+function bookFood(){
+  let selectedFood=[];for(let k in foodCart){if(foodCart[k]>0) selectedFood.push(k+' x'+foodCart[k]);}
+  if(selectedFood.length===0){alert('Select at least one item');return;}
+  let name=prompt("Enter your name"),phone=prompt("Enter mobile number"),addr=prompt("Enter address / leave blank for auto-detect");
+  if(!name||!phone){alert('Name & phone required');return;}
+  if(!addr) addr=document.getElementById('saddress').value||'Not Provided';
+  let orders=JSON.parse(localStorage.getItem('orders')||'[]');
+  orders.push({service:'Food',items:selectedFood.join(', '),name:name,phone:phone,address:addr,map:addr});
+  localStorage.setItem('orders',JSON.stringify(orders));
+  alert('Order Booked 🚀: '+selectedFood.join(', '));
+  animateRocket();foodCart = {}; foodMenu.forEach(item=>foodCart[item.name]=0);document.querySelectorAll('#foodPage span[id^="qty_"]').forEach(s=>s.innerText=0);updateCart();
+  if(document.getElementById('panel')?.style.display==='block') updateAdminOrders();
+}
+
+function bookService(){
+  let name=document.getElementById('sname').value;
+  let phone=document.getElementById('sphone').value;
+  let address=document.getElementById('saddress').value;
+  let service=document.getElementById('serviceTitle').innerText;
+  let sub=document.getElementById('serviceType').value;
+  if(!name||!phone||!address){alert('Fill all fields');return;}
+  let orders=JSON.parse(localStorage.getItem('orders')||'[]');
+  orders.push({service,sub,name,phone,address,map:address});
+  localStorage.setItem('orders',JSON.stringify(orders));
+  alert('Order Booked 🚀: '+service+' - '+sub);
+  animateRocket();
+  if(document.getElementById('panel')?.style.display==='block') updateAdminOrders();
+}
+
+// Worker
+function registerWorker(){
+  let wname=document.getElementById('wname').value;
+  let wphone=document.getElementById('wphone').value;
+  let wservice=document.getElementById('wservice').value;
+  let wsub=document.getElementById('wsubcategory').value;
+  let waddress=document.getElementById('waddress').value;
+  if(!wname||!wphone||!waddress){alert('Fill all fields'); return;}
+  let workers=JSON.parse(localStorage.getItem('workers')||'[]');
+  workers.push({name:wname,phone:wphone,service:wservice,sub:wsub,address:waddress,map:waddress});
+  localStorage.setItem('workers',JSON.stringify(workers));
+  alert('Worker Registered 👍');
+  if(document.getElementById('panel')?.style.display==='block') updateAdminWorkers();
+}
+
+// Admin
+function login(){if(document.getElementById('pass').value==='Swetha@149'){document.getElementById('panel').style.display='block';updateAdminWorkers();updateAdminOrders();}else alert('Wrong Password');}
+function updateAdminWorkers(){let workers=JSON.parse(localStorage.getItem('workers')||'[]');let wlist=document.getElementById('workerList'); wlist.innerHTML='';workers.forEach(w=>{let li=document.createElement('li');li.innerHTML=`${w.name} | ${w.phone} | ${w.service} | <a href="${w.map}" target="_blank">Map</a>`;wlist.appendChild(li);});}
+function updateAdminOrders(){let orders=JSON.parse(localStorage.getItem('orders')||'[]');let olist=document.getElementById('orderList');olist.innerHTML='';orders.forEach(o=>{let li=document.createElement('li');li.innerHTML=`${o.service} ${o.sub?'- '+o.sub:''} ${o.items?'- '+o.items:''} | ${o.name} | ${o.phone} | <a href="${o.map}" target="_blank">Map</a>`;olist.appendChild(li);});}
+function clearAdminData(){if(confirm('Clear all workers & orders?')){localStorage.clear();updateAdminWorkers();updateAdminOrders();alert('All data cleared');}}
+
+// Worker subcategories
+function updateWorkerType(){let service=document.getElementById('wservice').value;let sub=document.getElementById('wsubcategory');sub.innerHTML='';if(service==='Food'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}else if(service==='Grocery'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}else{sub.innerHTML=`<option>Installation</option><option>Repair</option>`;}}
+
+// Initialize
 window.onload=function(){updateWorkerType();}
 </script>
 
 </body>
-  </html>
+</html>
