@@ -42,9 +42,7 @@ nav button{background:none;border:none;font-size:16px;color:#1e73be}
 <option value="Electrician">Electrician</option>
 <option value="Mechanic">Mechanic</option>
 </select>
-<select id="subcategory">
-<option>Select option</option>
-</select>
+<select id="subcategory"></select>
 <input id="address" placeholder="Address">
 <button type="button" onclick="getLocation()">Use My Location</button>
 <div id="map" style="margin-top:15px;height:200px;border-radius:10px;overflow:hidden"></div>
@@ -90,7 +88,16 @@ localStorage.setItem('lastAddress', address);
 alert('Booked 🚀\n'+service+' - '+sub);}
 window.onload=function(){let saved=localStorage.getItem('lastAddress');if(saved){document.getElementById('address').value=saved;}}
 
-function updateType(){let service=document.getElementById('service').value;let sub=document.getElementById('subcategory');sub.innerHTML='';if(service==='Food'||service==='Grocery'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option><option>Schedule Delivery</option>`;}else{sub.innerHTML=`<option>Installation</option><option>Repair</option><option>Inspection</option>`;}}
+function updateType(){
+let service=document.getElementById('service').value;
+let sub=document.getElementById('subcategory');
+sub.innerHTML='';
+if(service==='Food'||service==='Grocery'){
+sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option><option>Schedule Delivery</option>`;
+}else{
+sub.innerHTML=`<option>Installation</option><option>Repair</option><option>Inspection</option>`;
+}
+}
 
 function getLocation(){if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(pos){var lat=pos.coords.latitude;var lon=pos.coords.longitude;document.getElementById('address').value='Lat: '+lat+', Lon: '+lon;var mapFrame=`<iframe width="100%" height="200" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;document.getElementById('map').innerHTML=mapFrame;});}else{alert('Location not supported');}}
 
