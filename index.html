@@ -27,12 +27,18 @@ button:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(30,115,190,0.3);cu
 nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-content:space-around;padding:10px 0;box-shadow:0 -2px 8px rgba(0,0,0,0.1);transition:0.3s;}
 nav button{background:none;border:none;font-size:18px;color:#1e73be;transition:transform 0.2s;}
 nav button:hover{transform:scale(1.2);}
+
+/* Food dropdown */
+#foodSelect{width:100%;padding:10px;border-radius:10px;margin:10px 0;}
+#foodQtyDiv{display:none;margin:10px 0;justify-content:space-between;align-items:center;display:flex;}
+#foodQtyDiv button{padding:5px 10px;background:#1e73be;color:white;border:none;border-radius:5px;cursor:pointer;transition:0.2s;}
+#foodQtyDiv button:hover{background:#155a96;transform:scale(1.1);}
+#foodQty{min-width:20px;text-align:center;font-weight:bold;}
 </style>
 </head>
 <body>
 
 <div id="splash">MMS 🚀</div>
-
 <header>MMS</header>
 
 <!-- Home Page -->
@@ -69,8 +75,15 @@ nav button:hover{transform:scale(1.2);}
 </select>
 <select id="subcategory"></select>
 
-<!-- Food menu with + / - -->
-<div id="foodList" style="display:none;margin-top:10px;"></div>
+<!-- Food dropdown menu -->
+<select id="foodSelect" onchange="selectFood()">
+<option value="">Select Food Item</option>
+</select>
+<div id="foodQtyDiv">
+<button onclick="changeFoodQty(-1)">−</button>
+<span id="foodQty">0</span>
+<button onclick="changeFoodQty(1)">+</button>
+</div>
 
 <input id="address" placeholder="Address">
 <button type="button" onclick="getLocation()">Use My Location</button>
@@ -132,55 +145,53 @@ setTimeout(()=>{document.getElementById('splash').style.display='none';document.
 function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 
 // Food menu
-const foodMenu=[{name:"Pizza",price:250},{name:"Burger",price:120},{name:"Sandwich",price:100},{name:"Pasta",price:180},{name:"Fried Rice",price:150}];
+let foodMenu=[{name:"Pizza",price:250},{name:"Burger",price:120},{name:"Sandwich",price:100},{name:"Pasta",price:180},{name:"Fried Rice",price:150}];
 let foodCart={};
+foodMenu.forEach(item=>foodCart[item.name]=0);
 
+// Populate food dropdown
+const foodSelect=document.getElementById('foodSelect');
+foodMenu.forEach(item=>{
+  let opt=document.createElement('option');
+  opt.value=item.name;
+  opt.textContent=`${item.name} - ₹${item.price}`;
+  foodSelect.appendChild(opt);
+});
+let selectedFoodItem="";
+
+function selectFood(){
+  selectedFoodItem=foodSelect.value;
+  if(selectedFoodItem){
+    document.getElementById('foodQtyDiv').style.display='flex';
+    document.getElementById('foodQty').innerText=foodCart[selectedFoodItem];
+  } else document.getElementById('foodQtyDiv').style.display='none';
+}
+
+function changeFoodQty(delta){
+  if(!selectedFoodItem) return;
+  foodCart[selectedFoodItem]+=delta;
+  if(foodCart[selectedFoodItem]<0) foodCart[selectedFoodItem]=0;
+  document.getElementById('foodQty').innerText=foodCart[selectedFoodItem];
+}
+
+// Service selection
 function selectService(s){document.getElementById('service').value=s;updateType();show('booking');}
 
 // Booking subcategories
 function updateType(){
   let service=document.getElementById('service').value;
   let sub=document.getElementById('subcategory');
-  let foodList=document.getElementById('foodList');
-  sub.innerHTML=''; foodList.style.display='none'; foodCart={};
-
-  if(service==='Food'){
-    foodList.style.display='block'; foodList.innerHTML='';
-    foodMenu.forEach(item=>{
-      let div=document.createElement('div');
-      div.style.display='flex'; div.style.justifyContent='space-between'; div.style.alignItems='center'; div.style.margin='5px 0';
-      div.innerHTML=`<span>${item.name} - ₹${item.price}</span>
-      <span>
-        <button onclick="changeQty('${item.name}',-1)">−</button>
-        <span id="qty_${item.name}">0</span>
-        <button onclick="changeQty('${item.name}',1)">+</button>
-      </span>`;
-      foodList.appendChild(div); foodCart[item.name]=0;
-    });
-  }
-  else if(service==='Grocery'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option><option>Schedule Delivery</option>`;}
-  else{sub.innerHTML=`<option>Installation</option><option>Repair</option><option>Inspection</option>`;}
-}
-
-// Worker subcategories
-function updateWorkerType(){
-  let service=document.getElementById('wservice').value;
-  let sub=document.getElementById('wsubcategory'); sub.innerHTML='';
-  if(service==='Food'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option><option>Schedule Delivery</option>`;}
-  else{sub.innerHTML=`<option>Installation</option><option>Repair</option><option>Inspection</option>`;}
-}
-
-// Change quantity
-function changeQty(name,delta){
-  let qty=foodCart[name]+delta; if(qty<0) qty=0; foodCart[name]=qty;
-  document.getElementById('qty_'+name).innerText=qty;
+  sub.innerHTML='';
+  if(service==='Food') sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;
+  else if(service==='Grocery') sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;
+  else sub.innerHTML=`<option>Installation</option><option>Repair</option>`;
 }
 
 // Location
-function getLocation(){if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{let lat=p.coords.latitude, lon=p.coords.longitude;document.getElementById('address').value=`Lat: ${lat}, Lon: ${lon}`;document.getElementById('map').innerHTML=`<iframe width="100%" height="200" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;});}else alert('Location not supported');}
-function getWorkerLocation(){if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{let lat=p.coords.latitude, lon=p.coords.longitude;document.getElementById('waddress').value=`Lat: ${lat}, Lon: ${lon}`;document.getElementById('wmap').innerHTML=`<iframe width="100%" height="200" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;});}else alert('Location not supported');}
+function getLocation(){if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{let lat=p.coords.latitude,lon=p.coords.longitude;document.getElementById('address').value=`Lat: ${lat}, Lon: ${lon}`;document.getElementById('map').innerHTML=`<iframe width="100%" height="200" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;});}else alert('Location not supported');}
+function getWorkerLocation(){if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{let lat=p.coords.latitude,lon=p.coords.longitude;document.getElementById('waddress').value=`Lat: ${lat}, Lon: ${lon}`;document.getElementById('wmap').innerHTML=`<iframe width="100%" height="200" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;});}else alert('Location not supported');}
 
-// Book service + Rocket animation
+// Rocket animation
 function animateRocket(){
   const rocketContainer=document.getElementById('rocketContainer');
   const fire=document.getElementById('fire');
@@ -196,31 +207,33 @@ function animateRocket(){
   },30);
 }
 
+// Book service
 function book(){
   let name=document.getElementById('name').value;
   let phone=document.getElementById('phone').value;
   let service=document.getElementById('service').value;
   let sub=document.getElementById('subcategory').value;
   let address=document.getElementById('address').value;
+  if(!name||!phone||!address){alert('Fill Name, Phone & Address'); return;}
   let selectedFood=[];
-  if(service==='Food'){for(let k in foodCart){if(foodCart[k]>0) selectedFood.push(k+' x'+foodCart[k]);}}
+  for(let k in foodCart){if(foodCart[k]>0) selectedFood.push(k+' x'+foodCart[k]);}
+  if(service==='Food' && selectedFood.length===0){alert('Select at least one food item'); return;}
   let orders=JSON.parse(localStorage.getItem('orders')||'[]');
   orders.push({name,phone,service,sub,address,food:selectedFood.join(', ')});
   localStorage.setItem('orders',JSON.stringify(orders));
-  localStorage.setItem('lastAddress', address);
   alert('Booked 🚀 '+service+(selectedFood.length? ' - '+selectedFood.join(', '):'')+' - '+sub);
-  animateRocket(); // Rocket animation
+  animateRocket();
   if(document.getElementById('panel').style.display==='block') updateAdminOrders();
 }
 
-// Register worker
+// Worker registration
 function registerWorker(){
   let wname=document.getElementById('wname').value;
   let wphone=document.getElementById('wphone').value;
   let wservice=document.getElementById('wservice').value;
   let wsub=document.getElementById('wsubcategory').value;
   let waddress=document.getElementById('waddress').value;
-  if(!wname||!wphone||!waddress){alert('Fill all fields');return;}
+  if(!wname||!wphone||!waddress){alert('Fill all fields'); return;}
   let workers=JSON.parse(localStorage.getItem('workers')||'[]');
   workers.push({name:wname,phone:wphone,service:wservice,sub:wsub,address:waddress});
   localStorage.setItem('workers',JSON.stringify(workers));
@@ -228,35 +241,21 @@ function registerWorker(){
   if(document.getElementById('panel').style.display==='block') updateAdminWorkers();
 }
 
-// Admin login
-function login(){if(pass.value==='Swetha@149'){document.getElementById('panel').style.display='block';updateAdminWorkers();updateAdminOrders();}else alert('Wrong Password');}
+// Admin
+function login(){if(document.getElementById('pass').value==='Swetha@149'){document.getElementById('panel').style.display='block';updateAdminWorkers();updateAdminOrders();}else alert('Wrong Password');}
+function updateAdminWorkers(){let workers=JSON.parse(localStorage.getItem('workers')||'[]');let wlist=document.getElementById('workerList');wlist.innerHTML='';workers.forEach(w=>{let mapLink=w.address.includes('Lat:')?`https://www.google.com/maps?q=${w.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/)[1]},${w.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/)[2]}`:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(w.address)}`;let li=document.createElement('li');li.innerHTML=`${w.name} | ${w.phone} | ${w.service} - ${w.sub} | ${w.address} <a href='${mapLink}' target='_blank'>📍Map</a>`;wlist.appendChild(li);});}
+function updateAdminOrders(){let orders=JSON.parse(localStorage.getItem('orders')||'[]');let olist=document.getElementById('orderList');olist.innerHTML='';orders.forEach(o=>{let mapLink=o.address.includes('Lat:')?`https://www.google.com/maps?q=${o.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/)[1]},${o.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/)[2]}`:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}`;let li=document.createElement('li');li.innerHTML=`${o.name} | ${o.phone} | ${o.service} ${o.food?'- '+o.food:''} - ${o.sub} | ${o.address} <a href='${mapLink}' target='_blank'>📍Map</a>`;olist.appendChild(li);});}
 
-// Admin update
-function updateAdminWorkers(){
-  let workers=JSON.parse(localStorage.getItem('workers')||'[]');
-  let wlist=document.getElementById('workerList'); wlist.innerHTML='';
-  workers.forEach(w=>{
-    let mapLink=w.address.includes('Lat:')?`https://www.google.com/maps?q=${w.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/)[1]},${w.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/)[2]}`:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(w.address)}`;
-    let li=document.createElement('li'); li.innerHTML=`${w.name} | ${w.phone} | ${w.service} - ${w.sub} | ${w.address} <a href='${mapLink}' target='_blank'>📍Map</a>`;
-    wlist.appendChild(li);
-  });
-}
-function updateAdminOrders(){
-  let orders=JSON.parse(localStorage.getItem('orders')||'[]');
-  let olist=document.getElementById('orderList'); olist.innerHTML='';
-  orders.forEach(o=>{
-    let mapLink=o.address.includes('Lat:')?`https://www.google.com/maps?q=${o.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/)[1]},${o.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/)[2]}`:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}`;
-    let li=document.createElement('li'); li.innerHTML=`${o.name} | ${o.phone} | ${o.service} ${o.food?'- '+o.food:''} - ${o.sub} | ${o.address} <a href='${mapLink}' target='_blank'>📍Map</a>`;
-    olist.appendChild(li);
-  });
+// Worker subcategories
+function updateWorkerType(){
+  let service=document.getElementById('wservice').value;
+  let sub=document.getElementById('wsubcategory'); sub.innerHTML='';
+  if(service==='Food'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
+  else{sub.innerHTML=`<option>Installation</option><option>Repair</option>`;}
 }
 
 // Onload defaults
-window.onload=function(){
-  let saved=localStorage.getItem('lastAddress');
-  if(saved){document.getElementById('address').value=saved;updateType();}
-  updateWorkerType();
-}
+window.onload=function(){updateType();updateWorkerType();}
 </script>
 
 </body>
