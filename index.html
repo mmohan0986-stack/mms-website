@@ -1,6 +1,8 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MMS</title>
 <style>
 body{font-family:Arial;margin:0;background:#eef2f7}
@@ -17,8 +19,11 @@ nav button{background:none;border:none;font-size:16px;color:#1e73be}
 </style>
 </head>
 <body>
+
 <div id="splash">MMS 🚀</div>
+
 <header>MMS</header>
+
 <div id="home" class="section">
 <h2>Welcome 👋</h2>
 <p>All services in one app</p>
@@ -29,6 +34,7 @@ nav button{background:none;border:none;font-size:16px;color:#1e73be}
 <div class="card" onclick="show('admin')">🔐 Admin</div>
 </div>
 </div>
+
 <div id="services" class="section">
 <h2>Services</h2>
 <div class="card" onclick="selectService('Food')">🍔 Food</div>
@@ -36,8 +42,9 @@ nav button{background:none;border:none;font-size:16px;color:#1e73be}
 <div class="card" onclick="selectService('Electrician')">⚡ Electrician</div>
 <div class="card" onclick="selectService('Mechanic')">🔧 Mechanic</div>
 </div>
+
 <div id="booking" class="section">
-<h2>Book</h2>
+<h2>Book Service</h2>
 <input id="name" placeholder="Name">
 <input id="phone" placeholder="Mobile Number">
 <select id="service" onchange="updateType()">
@@ -52,13 +59,24 @@ nav button{background:none;border:none;font-size:16px;color:#1e73be}
 <div id="map" style="margin-top:15px;height:200px;border-radius:10px;overflow:hidden"></div>
 <button onclick="book()">Book Now</button>
 </div>
+
 <div id="worker" class="section">
-<h2>Work</h2>
+<h2>Worker Registration</h2>
 <input id="wname" placeholder="Name">
 <input id="wphone" placeholder="Mobile Number">
+<select id="wservice" onchange="updateWorkerType()">
+<option value="Food">Food</option>
+<option value="Grocery">Grocery</option>
+<option value="Electrician">Electrician</option>
+<option value="Mechanic">Mechanic</option>
+</select>
+<select id="wsubcategory"></select>
 <input id="waddress" placeholder="Address">
-<button onclick="registerWorker()">Register</button>
+<button type="button" onclick="getWorkerLocation()">Use My Location</button>
+<div id="wmap" style="margin-top:15px;height:200px;border-radius:10px;overflow:hidden"></div>
+<button onclick="registerWorker()">Register Worker</button>
 </div>
+
 <div id="admin" class="section">
 <h2>Admin</h2>
 <input type="password" id="pass" placeholder="Password">
@@ -70,6 +88,7 @@ nav button{background:none;border:none;font-size:16px;color:#1e73be}
 <ul id="orderList"></ul>
 </div>
 </div>
+
 <nav>
 <button onclick="show('home')">🏠</button>
 <button onclick="show('services')">🛠</button>
@@ -77,10 +96,28 @@ nav button{background:none;border:none;font-size:16px;color:#1e73be}
 <button onclick="show('worker')">👷</button>
 <button onclick="show('admin')">🔐</button>
 </nav>
+
 <script>
 setTimeout(()=>{document.getElementById('splash').style.display='none';document.getElementById('home').classList.add('active');},2000);
+
 function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function selectService(s){document.getElementById('service').value=s;updateType();show('booking');}
+function updateType(){
+let service=document.getElementById('service').value;
+let sub=document.getElementById('subcategory');sub.innerHTML='';
+if(service==='Food'||service==='Grocery'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option><option>Schedule Delivery</option>`;}
+else{sub.innerHTML=`<option>Installation</option><option>Repair</option><option>Inspection</option>`;}
+}
+function updateWorkerType(){
+let service=document.getElementById('wservice').value;
+let sub=document.getElementById('wsubcategory');sub.innerHTML='';
+if(service==='Food'||service==='Grocery'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option><option>Schedule Delivery</option>`;}
+else{sub.innerHTML=`<option>Installation</option><option>Repair</option><option>Inspection</option>`;}
+}
+
+function getLocation(){if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(pos){var lat=pos.coords.latitude;var lon=pos.coords.longitude;document.getElementById('address').value='Lat: '+lat+', Lon: '+lon;document.getElementById('map').innerHTML=`<iframe width="100%" height="200" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;});}else{alert('Location not supported');}}
+function getWorkerLocation(){if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(pos){var lat=pos.coords.latitude;var lon=pos.coords.longitude;document.getElementById('waddress').value='Lat: '+lat+', Lon: '+lon;document.getElementById('wmap').innerHTML=`<iframe width="100%" height="200" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;});}else{alert('Location not supported');}}
+
 function book(){
 let name=document.getElementById('name').value;
 let phone=document.getElementById('phone').value;
@@ -91,20 +128,24 @@ let orders=JSON.parse(localStorage.getItem('orders')||'[]');
 orders.push({name,phone,service,sub,address});
 localStorage.setItem('orders',JSON.stringify(orders));
 localStorage.setItem('lastAddress', address);
-alert('Booked 🚀\n'+service+' - '+sub);
-if(document.getElementById('panel').style.display==='block'){updateAdminOrders();}}
-window.onload=function(){let saved=localStorage.getItem('lastAddress');if(saved){document.getElementById('address').value=saved;updateType();}}
-function updateType(){
-let service=document.getElementById('service').value;
-let sub=document.getElementById('subcategory');
-sub.innerHTML='';
-if(service==='Food'||service==='Grocery'){
-sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option><option>Schedule Delivery</option>`;
-}else{
-sub.innerHTML=`<option>Installation</option><option>Repair</option><option>Inspection</option>`;
-}}
-function getLocation(){if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(pos){var lat=pos.coords.latitude;var lon=pos.coords.longitude;document.getElementById('address').value='Lat: '+lat+', Lon: '+lon;var mapFrame=`<iframe width="100%" height="200" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;document.getElementById('map').innerHTML=mapFrame;});}else{alert('Location not supported');}}
-function registerWorker(){let wname=document.getElementById('wname').value;let wphone=document.getElementById('wphone').value;let waddress=document.getElementById('waddress').value;if(!wname||!wphone||!waddress){alert('Fill all fields');return;}let workers=JSON.parse(localStorage.getItem('workers')||'[]');workers.push({name:wname,phone:wphone,address:waddress});localStorage.setItem('workers',JSON.stringify(workers));alert('Worker Registered 👍');}
+alert('Booked 🚀\\n'+service+' - '+sub);
+if(document.getElementById('panel').style.display==='block'){updateAdminOrders();}
+}
+
+function registerWorker(){
+let wname=document.getElementById('wname').value;
+let wphone=document.getElementById('wphone').value;
+let wservice=document.getElementById('wservice').value;
+let wsub=document.getElementById('wsubcategory').value;
+let waddress=document.getElementById('waddress').value;
+if(!wname||!wphone||!waddress){alert('Fill all fields');return;}
+let workers=JSON.parse(localStorage.getItem('workers')||'[]');
+workers.push({name:wname,phone:wphone,service:wservice,sub:wsub,address:waddress});
+localStorage.setItem('workers',JSON.stringify(workers));
+alert('Worker Registered 👍');
+if(document.getElementById('panel').style.display==='block'){updateAdminWorkers();}
+}
+
 function login(){
 if(pass.value==='Swetha@149'){
 document.getElementById('panel').style.display='block';
@@ -112,40 +153,41 @@ updateAdminWorkers();
 updateAdminOrders();
 }else alert('Wrong Password');
 }
+
 function updateAdminWorkers(){
 let workers=JSON.parse(localStorage.getItem('workers')||'[]');
 let wlist=document.getElementById('workerList');
 wlist.innerHTML='';
 workers.forEach(w=>{
 let mapLink;
-if(w.address.includes('Lat:')){
- let parts=w.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/);
- mapLink=`https://www.google.com/maps?q=${parts[1]},${parts[2]}`;
-}else{
- mapLink=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(w.address)}`;
-}
+if(w.address.includes('Lat:')){let parts=w.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/);mapLink=`https://www.google.com/maps?q=${parts[1]},${parts[2]}`;}
+else{mapLink=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(w.address)}`;}
 let li=document.createElement('li');
-li.innerHTML=`${w.name} | ${w.phone} | ${w.address} <a href='${mapLink}' target='_blank'>📍Map</a>`;
+li.innerHTML=`${w.name} | ${w.phone} | ${w.service} - ${w.sub} | ${w.address} <a href='${mapLink}' target='_blank'>📍Map</a>`;
 wlist.appendChild(li);
 });
 }
+
 function updateAdminOrders(){
 let orders=JSON.parse(localStorage.getItem('orders')||'[]');
 let olist=document.getElementById('orderList');
 olist.innerHTML='';
 orders.forEach(o=>{
 let mapLink;
-if(o.address.includes('Lat:')){
- let parts=o.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/);
- mapLink=`https://www.google.com/maps?q=${parts[1]},${parts[2]}`;
-}else{
- mapLink=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}`;
-}
+if(o.address.includes('Lat:')){let parts=o.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/);mapLink=`https://www.google.com/maps?q=${parts[1]},${parts[2]}`;}
+else{mapLink=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}`;}
 let li=document.createElement('li');
 li.innerHTML=`${o.name} | ${o.phone} | ${o.service} - ${o.sub} | ${o.address} <a href='${mapLink}' target='_blank'>📍Map</a>`;
 olist.appendChild(li);
 });
 }
+
+// Load last address and set default subcategories
+window.onload=function(){
+let saved=localStorage.getItem('lastAddress');
+if(saved){document.getElementById('address').value=saved;updateType();}
+updateWorkerType();
+}
 </script>
 </body>
- </html>
+</html>
