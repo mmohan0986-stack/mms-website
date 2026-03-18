@@ -7,51 +7,72 @@ header{background:#1e73be;color:white;text-align:center;padding:15px;font-size:2
 .section{display:none;padding:20px;animation:fade 0.4s}
 .active{display:block}
 @keyframes fade{from{opacity:0}to{opacity:1}}
-.card{background:white;margin:10px;padding:20px;border-radius:15px;text-align:center;box-shadow:0 3px 8px rgba(0,0,0,0.1);transition:0.3s}
-.card:active{transform:scale(1.05);background:#dbeafe}
-input,select{width:100%;padding:10px;margin:10px 0;border-radius:10px;border:1px solid #ccc}
+.card{background:white;margin:10px;padding:20px;border-radius:15px;text-align:center;box-shadow:0 3px 8px rgba(0,0,0,0.1);transition:transform 0.2s, box-shadow 0.2s, background 0.2s}
+.card:active{transform:scale(1.12);background:#cfe8ff;box-shadow:0 6px 15px rgba(0,0,0,0.2)}
+.card.clicked{transform:scale(1.08);background:#dbeafe}
+.card:active{transform:scale(1.08);background:#dbeafe}
 button{background:#1e73be;color:white;border:none;padding:12px;border-radius:10px;width:100%;font-size:16px;transition:0.3s}
-button:active{transform:scale(1.05)}
+button:active{transform:scale(1.08)}
+input,select{width:100%;padding:10px;margin:10px 0;border-radius:10px;border:1px solid #ccc}
 nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-content:space-around;padding:10px 0;box-shadow:0 -2px 6px rgba(0,0,0,0.1)}
 nav button{background:none;border:none;font-size:18px;color:#1e73be}
 #splash{position:fixed;top:0;left:0;width:100%;height:100%;background:#1e73be;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:30px;z-index:1000}
 #map,#map2{margin-top:10px;height:200px;border-radius:10px;overflow:hidden}
 </style></head><body><div id="splash">
   <div>🚀 MMSApp</div>
-  <small style="font-size:16px;margin-top:10px">"All services at your fingertips"</small>
+  <small style="font-size:16px;margin-top:10px">"Fast • Easy • Reliable"</small>
 </div><header>MMSApp 🚀</header><div id="home" class="section">
 <h2>Welcome 👋</h2>
 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px">
-<div class="card" onclick="show('services')">🛠 Services</div>
-<div class="card" onclick="show('booking')">📦 Book</div>
-<div class="card" onclick="show('worker')">👷 Work</div>
-<div class="card" onclick="show('admin')">🔐 Admin</div>
+<div class="card" onclick="clickEffect(this);show('services')">🛠 Services</div>
+<div class="card" onclick="clickEffect(this);show('booking')">📦 Book</div>
+<div class="card" onclick="clickEffect(this);show('worker')">👷 Work</div>
+<div class="card" onclick="clickEffect(this);show('admin')">🔐 Admin</div>
 </div>
 </div><div id="services" class="section">
 <h2>Services</h2>
 <div class="card" onclick="selectService('Food')">🍔 Food</div>
+<div class="card" onclick="selectService('Grocery')">🛒 Grocery</div>
 <div class="card" onclick="selectService('Electrician')">⚡ Electrician</div>
 <div class="card" onclick="selectService('Mechanic')">🔧 Mechanic</div>
 </div><div id="booking" class="section">
 <h2>📦 Book Now</h2>
 <input id="name" placeholder="Name">
 <input id="phone" placeholder="Mobile Number">
-<select id="service">
+<select id="service" onchange="toggleFoodMenu()">
 <option>Food</option>
+<option>Grocery</option>
 <option>Electrician</option>
 <option>Mechanic</option>
-</select>
-<input id="address" placeholder="Address">
+</select><div id="foodMenu" style="display:block">
+<h3>🍔 Food Menu</h3>
+<div class="card">🍔 Burger <button onclick="addItem('Burger')">+</button> <button onclick="removeItem('Burger')">-</button></div>
+<div class="card">🍕 Pizza <button onclick="addItem('Pizza')">+</button> <button onclick="removeItem('Pizza')">-</button></div>
+<div class="card">🍗 Biryani <button onclick="addItem('Biryani')">+</button> <button onclick="removeItem('Biryani')">-</button></div>
+<div class="card">🍟 Fries <button onclick="addItem('Fries')">+</button> <button onclick="removeItem('Fries')">-</button></div>
+<div class="card">🥤 Cool Drink <button onclick="addItem('Drink')">+</button> <button onclick="removeItem('Drink')">-</button></div>
+<p id="cart">Cart: Empty</p>
+</div><input id="address" placeholder="Address">
 <button onclick="getLocation()">📍 Use My Current Location</button>
 <div id="map"></div>
+<button onclick="book()">🚀 Confirm Booking</button>
+</div>
 <button onclick="book()">🚀 Confirm Booking</button>
 </div><div id="worker" class="section">
 <h2>👷 Worker Register</h2>
 <input id="wname" placeholder="Name">
 <input id="wphone" placeholder="Phone">
+<select id="wservice">
+<option>Food Delivery</option>
+<option>Grocery Delivery</option>
+<option>Electrician</option>
+<option>Mechanic</option>
+</select>
 <input id="waddress" placeholder="Address">
 <button onclick="getLocationWorker()">📍 Use My Location</button>
 <div id="map2"></div>
+<button onclick="registerWorker()">Register</button>
+</div>
 <button onclick="registerWorker()">Register</button>
 </div><div id="admin" class="section">
 <h2>🔐 Admin</h2>
@@ -65,10 +86,10 @@ nav button{background:none;border:none;font-size:18px;color:#1e73be}
 </div>
 </div><nav>
 <button onclick="show('home')">🏠</button>
-<button onclick="show('services')">🛠</button>
-<button onclick="show('booking')">📦</button>
-<button onclick="show('worker')">👷</button>
-<button onclick="show('admin')">🔐</button>
+<button onclick="clickEffect(this);show('services')">🛠</button>
+<button onclick="clickEffect(this);show('booking')">📦</button>
+<button onclick="clickEffect(this);show('worker')">👷</button>
+<button onclick="clickEffect(this);show('admin')">🔐</button>
 </nav><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -86,35 +107,48 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// BOOK
+let cartData = {};
+window.addItem = function(item){cartData[item]=(cartData[item]||0)+1;updateCart();}
+window.removeItem = function(item){if(cartData[item]){cartData[item]--; if(cartData[item]<=0) delete cartData[item];}updateCart();}
+function updateCart(){let text='Cart: ';for(let i in cartData){text+=i+'('+cartData[i]+') ';}if(text==='Cart: ') text='Cart: Empty';document.getElementById('cart').innerText=text;}
+function toggleFoodMenu(){let s=service.value;document.getElementById('foodMenu').style.display=(s==='Food')?'block':'none';}
+
 window.book = function(){
-const nameVal=document.getElementById('name').value;
-const phoneVal=document.getElementById('phone').value;
-const serviceVal=document.getElementById('service').value;
-const addressVal=document.getElementById('address').value;
+let nameVal=name.value;
+let phoneVal=phone.value;
+let serviceVal=service.value;
+let addressVal=address.value;
 if(!nameVal||!phoneVal||!addressVal){alert('Fill all fields');return;}
-push(ref(db,'orders'),{name:nameVal,phone:phoneVal,service:serviceVal,address:addressVal});
+push(ref(db,'orders'),{name:nameVal,phone:phoneVal,service:serviceVal,address:addressVal,cart:cartData});
 alert('Booked 🚀');
 }
 
-// WORKER
 window.registerWorker = function(){
-const wnameVal=wname.value;
-const wphoneVal=wphone.value;
-const waddressVal=waddress.value;
-if(!wnameVal||!wphoneVal||!waddressVal){alert('Fill all fields');return;}
-push(ref(db,'workers'),{name:wnameVal,phone:wphoneVal,address:waddressVal});
+push(ref(db,'workers'),{name:wname.value,phone:wphone.value,service:wservice.value,address:waddress.value});
 alert('Worker Registered');
 }
 
-// ADMIN LIVE
-window.updateAdmin = function(){
+window.login=function(){
+if(pass.value==='1234'){
+panel.style.display='block';
+loadAdmin();
+}else alert('Wrong');
+}
+
+function loadAdmin(){
 onValue(ref(db,'orders'),snap=>{
 orderList.innerHTML='';
 snap.forEach(c=>{
 let o=c.val();
+let link;
+if(o.address.includes('Lat')){
+let m=o.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/);
+link=`https://www.google.com/maps?q=${m[1]},${m[2]}`;
+}else{
+link=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}`;
+}
 let li=document.createElement('li');
-li.innerHTML=`${o.name} | ${o.phone} | ${o.service} | ${o.address}`;
+li.innerHTML=`${o.name} | ${o.phone} | ${o.service} | <a href='${link}' target='_blank'>📍Map</a>`;
 orderList.appendChild(li);
 });});
 
@@ -122,22 +156,20 @@ onValue(ref(db,'workers'),snap=>{
 workerList.innerHTML='';
 snap.forEach(c=>{
 let w=c.val();
+let link;
+if(w.address.includes('Lat')){
+let m=w.address.match(/Lat: ([0-9.-]+), Lon: ([0-9.-]+)/);
+link=`https://www.google.com/maps?q=${m[1]},${m[2]}`;
+}else{
+link=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(w.address)}`;
+}
 let li=document.createElement('li');
-li.innerHTML=`${w.name} | ${w.phone} | ${w.address}`;
+li.innerHTML=`${w.name} | ${w.phone} | ${w.service} | <a href='${link}' target='_blank'>📍Map</a>`;
 workerList.appendChild(li);
 });});
 }
 
-window.login=function(){
-if(pass.value==='1234'){
-panel.style.display='block';
-updateAdmin();
-}else alert('Wrong');
-}
-
-// LOCATION CUSTOMER
 window.getLocation=function(){
-if(!navigator.geolocation){alert('Location not supported');return;}
 navigator.geolocation.getCurrentPosition(pos=>{
 let lat=pos.coords.latitude;
 let lon=pos.coords.longitude;
@@ -146,9 +178,7 @@ map.innerHTML=`<iframe width="100%" height="200" src="https://maps.google.com/ma
 });
 }
 
-// LOCATION WORKER
 window.getLocationWorker=function(){
-if(!navigator.geolocation){alert('Location not supported');return;}
 navigator.geolocation.getCurrentPosition(pos=>{
 let lat=pos.coords.latitude;
 let lon=pos.coords.longitude;
@@ -158,7 +188,9 @@ map2.innerHTML=`<iframe width="100%" height="200" src="https://maps.google.com/m
 }
 </script><script>
 setTimeout(()=>{splash.style.display='none';home.classList.add('active');},2000);
+function clickEffect(el){el.classList.add('clicked');setTimeout(()=>el.classList.remove('clicked'),200);} 
+
 function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function selectService(s){service.value=s;show('booking');}
 </script></body>
-  </html>
+</html>
