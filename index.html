@@ -7,10 +7,10 @@
 
 <style>
 body{font-family:Arial;margin:0;background:#eef2f7;}
-header{background:#1e73be;color:#fff;text-align:center;padding:15px;font-size:24px;font-weight:bold;}
+header{background:#1e73be;color:white;text-align:center;padding:15px;font-size:24px;font-weight:bold;}
 .section{display:none;padding:20px;}
 .active{display:block;}
-.card{background:white;margin:10px;padding:20px;border-radius:15px;text-align:center;box-shadow:0 3px 8px rgba(0,0,0,0.1);cursor:pointer;}
+.card{background:white;margin:10px;padding:20px;border-radius:15px;text-align:center;box-shadow:0 3px 8px rgba(0,0,0,0.1);}
 input,select{width:100%;padding:10px;margin:10px 0;border-radius:10px;border:1px solid #ccc;}
 button{background:#1e73be;color:white;border:none;padding:10px;border-radius:10px;width:100%;}
 nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-content:space-around;padding:10px;}
@@ -19,12 +19,6 @@ nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-con
 
 </head>
 <body>
-
-<!-- SPLASH -->
-<div id="splash" style="position:fixed;width:100%;height:100%;background:#1e73be;color:white;display:flex;justify-content:center;align-items:center;flex-direction:column;z-index:9999;">
-<h1>MMS 🚀</h1>
-<p>Fast. Simple. Reliable.</p>
-</div>
 
 <header>MMS</header>
 
@@ -47,7 +41,7 @@ nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-con
 <div id="food" class="section">
 <h2>Food</h2>
 
-<span onclick="useLocation('Food')">📍 Use My Location</span>
+<button onclick="useLocation('Food')">📍 Use My Location</button>
 <div id="mapFood"></div>
 
 <div id="foodList"></div>
@@ -65,7 +59,7 @@ nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-con
 <input id="name" placeholder="Name">
 <input id="phone" placeholder="Phone">
 
-<span onclick="useLocation('Service')">📍 Use My Location</span>
+<button onclick="useLocation('Service')">📍 Use My Location</button>
 <div id="mapService"></div>
 
 <button onclick="bookService()">Book</button>
@@ -81,7 +75,7 @@ nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-con
 <option>Electrician</option>
 </select>
 
-<span onclick="useLocation('Worker')">📍 Use My Location</span>
+<button onclick="useLocation('Worker')">📍 Use My Location</button>
 <div id="mapWorker"></div>
 
 <button onclick="registerWorker()">Register</button>
@@ -121,19 +115,15 @@ window.db=db;
 
 <script>
 
-// splash
-setTimeout(()=>{document.getElementById('splash').style.display='none';},2000);
-
-// nav
+// NAV
 function show(id){
 document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
 
-// food
+// FOOD
 let menu=["Pizza","Burger","Cake"];
-let cart={};
-menu.forEach(i=>cart[i]=0);
+let cart={}; menu.forEach(i=>cart[i]=0);
 
 function openFood(){
 show('food');
@@ -158,10 +148,10 @@ let c=document.getElementById('cart');c.innerHTML='';
 for(let k in cart){if(cart[k]>0)c.innerHTML+=k+" x"+cart[k]+"<br>";}
 }
 
-// service
+// SERVICE
 function openService(s){show('service');document.getElementById('stype').innerText=s;}
 
-// location
+// LOCATION
 let locLinks={};
 
 function useLocation(type){
@@ -177,7 +167,7 @@ src="https://maps.google.com/maps?q=${lat},${lon}&output=embed"></iframe>`;
 });
 }
 
-// booking
+// BOOKING
 function bookFood(){
 let items=[];
 for(let k in cart){if(cart[k]>0)items.push(k+" x"+cart[k]);}
@@ -211,11 +201,11 @@ map:locLinks['Worker']
 alert("Worker Added");
 }
 
-// admin
+// ADMIN
 function login(){
 if(document.getElementById('pass').value==="Swetha@149"){
 listen();
-}else alert("Wrong");
+}else alert("Wrong Password");
 }
 
 function listen(){
