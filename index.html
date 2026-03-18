@@ -1,262 +1,164 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MMS</title>
-<style>
-body{
-  font-family: Arial,sans-serif;
-  margin:0;
-  background:#eef2f7;
-  min-height:100vh;
-  overflow-y:auto;
-}
-header{
-  background:#1e73be;
-  color:white;
-  text-align:center;
-  padding:15px;
-  font-size:24px;
-  font-weight:bold;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-.section{ display:none; padding:20px; animation:fade 0.5s; max-height:none; overflow:visible;}
-.active{display:block;}
-@keyframes fade{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-.card{ background:white; margin:10px; padding:20px; border-radius:15px; text-align:center; box-shadow:0 3px 8px rgba(0,0,0,0.1); transition:transform 0.3s,box-shadow 0.3s; cursor:pointer;}
-.card:hover{transform:scale(1.05);box-shadow:0 8px 16px rgba(0,0,0,0.2);}
-input,select{ width:100%; padding:10px; margin:10px 0; border-radius:10px; border:1px solid #ccc; outline:none;}
-button{ background:#1e73be; color:white; border:none; padding:10px; border-radius:10px; width:100%; margin-top:10px; transition:0.2s; cursor:pointer;}
-button:hover{transform:scale(1.05);}
-nav{
-  position:fixed; bottom:0; width:100%; background:white; display:flex; justify-content:space-around; padding:10px 0; box-shadow:0 -2px 8px rgba(0,0,0,0.1);
-}
-nav button{background:none;border:none;font-size:18px;color:#1e73be; cursor:pointer;}
-nav button:hover{transform:scale(1.2);}
-.clickable{ transition: transform 0.2s ease, box-shadow 0.2s ease;}
-.clickable.active{ transform: scale(1.1); box-shadow: 0 0 15px #1e73be;}
-.food-item{ display:flex; justify-content:space-between; align-items:center; background:white; padding:10px; margin:5px 0; border-radius:10px; box-shadow:0 2px 4px rgba(0,0,0,0.1);}
-.food-item button{ width:35px; height:35px; padding:0; font-size:20px;}
-#cart{ max-height:200px; overflow-y:auto; border:1px solid #ccc; padding:5px; border-radius:10px; background:#f9f9f9; margin-top:10px;}
-#cart div{ display:flex; justify-content:space-between; margin:5px 0; padding:5px; background:#fff; border-radius:5px; box-shadow:0 1px 3px rgba(0,0,0,0.05);}
-</style>
-</head>
-<body>
-
-<header>MMS</header>
-
-<!-- Home -->
-<div id="home" class="section active">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MMSApp 🚀</title><style>
+body{font-family:Arial;margin:0;background:#eef2f7}
+header{background:#1e73be;color:white;text-align:center;padding:15px;font-size:20px}
+.section{display:none;padding:20px;animation:fade 0.4s}
+.active{display:block}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.card{background:white;margin:10px;padding:20px;border-radius:15px;text-align:center;box-shadow:0 3px 8px rgba(0,0,0,0.1);transition:0.3s}
+.card:active{transform:scale(1.05);background:#dbeafe}
+input,select{width:100%;padding:10px;margin:10px 0;border-radius:10px;border:1px solid #ccc}
+button{background:#1e73be;color:white;border:none;padding:12px;border-radius:10px;width:100%;font-size:16px;transition:0.3s}
+button:active{transform:scale(1.05)}
+nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-content:space-around;padding:10px 0;box-shadow:0 -2px 6px rgba(0,0,0,0.1)}
+nav button{background:none;border:none;font-size:18px;color:#1e73be}
+#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:#1e73be;color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:30px;z-index:1000}
+#map,#map2{margin-top:10px;height:200px;border-radius:10px;overflow:hidden}
+</style></head><body><div id="splash">
+  <div>🚀 MMSApp</div>
+  <small style="font-size:16px;margin-top:10px">"All services at your fingertips"</small>
+</div><header>MMSApp 🚀</header><div id="home" class="section">
 <h2>Welcome 👋</h2>
-<p>All-in-One Services</p>
-<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-top:20px">
-<div class="card clickable" onclick="show('services')">🛠 Services</div>
-<div class="card clickable" onclick="show('booking')">📦 Book</div>
-<div class="card clickable" onclick="show('worker')">👷 Work</div>
-<div class="card clickable" onclick="show('admin')">🔐 Admin</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px">
+<div class="card" onclick="show('services')">🛠 Services</div>
+<div class="card" onclick="show('booking')">📦 Book</div>
+<div class="card" onclick="show('worker')">👷 Work</div>
+<div class="card" onclick="show('admin')">🔐 Admin</div>
 </div>
-</div>
-
-<!-- Services -->
-<div id="services" class="section">
+</div><div id="services" class="section">
 <h2>Services</h2>
-<div class="card clickable" onclick="openFoodPage()">🍔 Food</div>
-<div class="card clickable" onclick="openServicePage('Grocery')">🛒 Grocery</div>
-<div class="card clickable" onclick="openServicePage('Electrician')">⚡ Electrician</div>
-<div class="card clickable" onclick="openServicePage('Mechanic')">🔧 Mechanic</div>
-</div>
-
-<!-- Food Page -->
-<div id="foodPage" class="section">
-<button class="clickable" onclick="bookFood()">Book Now</button>
-<div style="margin:10px 0; position:relative;">
-  <span id="useLocationFood" class="clickable" 
-        style="color:#1e73be; cursor:pointer; font-weight:bold; display:inline-block; padding:5px; border-radius:5px; border:1px solid #1e73be;" 
-        onclick="useLocation('Food')">📍 Use My Current Location</span>
-  <input id="manualAddressFood" placeholder="Enter address manually" style="display:block;margin-top:5px;">
-  <div id="mapConfirmFood" style="margin-top:5px;"></div>
-</div>
-<div id="foodList"></div>
-<h3>Cart</h3>
-<div id="cart"></div>
-</div>
-
-<!-- Generic Service Page -->
-<div id="servicePage" class="section">
-<h2 id="serviceTitle"></h2>
-<select id="serviceType"></select>
-<input id="sname" placeholder="Name">
-<input id="sphone" placeholder="Mobile Number">
-<input id="saddress" placeholder="Address">
-<div style="margin:10px 0; position:relative;">
-  <span id="useLocationService" class="clickable" 
-        style="color:#1e73be; cursor:pointer; font-weight:bold; display:inline-block; padding:5px; border-radius:5px; border:1px solid #1e73be;" 
-        onclick="useLocation('Service')">📍 Use My Current Location</span>
-</div>
-<button class="clickable" onclick="bookService()">Book Now</button>
-</div>
-
-<!-- Worker -->
-<div id="worker" class="section">
-<h2>Worker Registration</h2>
-<input id="wname" placeholder="Name">
-<input id="wphone" placeholder="Mobile Number">
-<select id="wservice" onchange="updateWorkerType()">
-<option value="Food">Food</option>
-<option value="Grocery">Grocery</option>
-<option value="Electrician">Electrician</option>
-<option value="Mechanic">Mechanic</option>
+<div class="card" onclick="selectService('Food')">🍔 Food</div>
+<div class="card" onclick="selectService('Electrician')">⚡ Electrician</div>
+<div class="card" onclick="selectService('Mechanic')">🔧 Mechanic</div>
+</div><div id="booking" class="section">
+<h2>📦 Book Now</h2>
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Mobile Number">
+<select id="service">
+<option>Food</option>
+<option>Electrician</option>
+<option>Mechanic</option>
 </select>
-<select id="wsubcategory"></select>
+<input id="address" placeholder="Address">
+<button onclick="getLocation()">📍 Use My Current Location</button>
+<div id="map"></div>
+<button onclick="book()">🚀 Confirm Booking</button>
+</div><div id="worker" class="section">
+<h2>👷 Worker Register</h2>
+<input id="wname" placeholder="Name">
+<input id="wphone" placeholder="Phone">
 <input id="waddress" placeholder="Address">
-<div style="margin:10px 0; position:relative;">
-  <span id="useLocationWorker" class="clickable" 
-        style="color:#1e73be; cursor:pointer; font-weight:bold; display:inline-block; padding:5px; border-radius:5px; border:1px solid #1e73be;" 
-        onclick="useLocation('Worker')">📍 Use My Current Location</span>
-  <div id="mapConfirmWorker" style="margin-top:5px;"></div>
-</div>
-<button class="clickable" onclick="registerWorker()">Register Worker</button>
-</div>
-
-<!-- Admin -->
-<div id="admin" class="section">
-<h2>Admin</h2>
+<button onclick="getLocationWorker()">📍 Use My Location</button>
+<div id="map2"></div>
+<button onclick="registerWorker()">Register</button>
+</div><div id="admin" class="section">
+<h2>🔐 Admin</h2>
 <input type="password" id="pass" placeholder="Password">
-<button class="clickable" onclick="login()">Login</button>
+<button onclick="login()">Login</button>
 <div id="panel" style="display:none">
-<h3>Workers</h3>
-<ul id="workerList"></ul>
 <h3>Orders</h3>
 <ul id="orderList"></ul>
+<h3>Workers</h3>
+<ul id="workerList"></ul>
 </div>
-</div>
+</div><nav>
+<button onclick="show('home')">🏠</button>
+<button onclick="show('services')">🛠</button>
+<button onclick="show('booking')">📦</button>
+<button onclick="show('worker')">👷</button>
+<button onclick="show('admin')">🔐</button>
+</nav><script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-<nav>
-<button class="clickable" onclick="show('home')">🏠 Home</button>
-<button class="clickable" onclick="show('services')">🛠 Services</button>
-<button class="clickable" onclick="show('worker')">👷 Worker</button>
-<button class="clickable" onclick="show('admin')">🔐 Admin</button>
-</nav>
+const firebaseConfig = {
+  apiKey: "AIzaSyDhSAa14vGpiRoAkFefTgY5WI9bBlgC3Dg",
+  authDomain: "mmsapp-c1200.firebaseapp.com",
+  projectId: "mmsapp-c1200",
+  storageBucket: "mmsapp-c1200.firebasestorage.app",
+  messagingSenderId: "235395144383",
+  appId: "1:235395144383:web:cf1936cdfa3877dfdd040a",
+  databaseURL: "https://mmsapp-c1200-default-rtdb.asia-southeast1.firebasedatabase.app/"
+};
 
-<script>
-// Sections
-function show(id){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// BOOK
+window.book = function(){
+const nameVal=document.getElementById('name').value;
+const phoneVal=document.getElementById('phone').value;
+const serviceVal=document.getElementById('service').value;
+const addressVal=document.getElementById('address').value;
+if(!nameVal||!phoneVal||!addressVal){alert('Fill all fields');return;}
+push(ref(db,'orders'),{name:nameVal,phone:phoneVal,service:serviceVal,address:addressVal});
+alert('Booked 🚀');
 }
 
-// Food menu
-let foodMenu=[{name:"Pizza",price:250},{name:"Burger",price:120},{name:"Sandwich",price:100},{name:"Pasta",price:180},{name:"Fried Rice",price:150},
-{name:"French Fries",price:80},{name:"Noodles",price:120},{name:"Cake",price:200},{name:"Ice Cream",price:90},{name:"Samosa",price:40}];
-let foodCart={}; foodMenu.forEach(item=>foodCart[item.name]=0);
-
-const foodList=document.getElementById('foodList');
-function updateCart(){ const cartDiv=document.getElementById('cart'); cartDiv.innerHTML='';
-  for(let k in foodCart){if(foodCart[k]>0){let d=document.createElement('div');d.textContent=`${k} x${foodCart[k]}`;cartDiv.appendChild(d);}}
+// WORKER
+window.registerWorker = function(){
+const wnameVal=wname.value;
+const wphoneVal=wphone.value;
+const waddressVal=waddress.value;
+if(!wnameVal||!wphoneVal||!waddressVal){alert('Fill all fields');return;}
+push(ref(db,'workers'),{name:wnameVal,phone:wphoneVal,address:waddressVal});
+alert('Worker Registered');
 }
-foodMenu.forEach(item=>{
-  let div=document.createElement('div');
-  div.className='food-item clickable';
-  div.innerHTML=`<span>${item.name} - ₹${item.price}</span>
-    <span>
-    <button onclick="changeQty('${item.name}',-1)">−</button>
-    <span id="qty_${item.name}">0</span>
-    <button onclick="changeQty('${item.name}',1)">+</button>
-    </span>`;
-  foodList.appendChild(div);
+
+// ADMIN LIVE
+window.updateAdmin = function(){
+onValue(ref(db,'orders'),snap=>{
+orderList.innerHTML='';
+snap.forEach(c=>{
+let o=c.val();
+let li=document.createElement('li');
+li.innerHTML=`${o.name} | ${o.phone} | ${o.service} | ${o.address}`;
+orderList.appendChild(li);
+});});
+
+onValue(ref(db,'workers'),snap=>{
+workerList.innerHTML='';
+snap.forEach(c=>{
+let w=c.val();
+let li=document.createElement('li');
+li.innerHTML=`${w.name} | ${w.phone} | ${w.address}`;
+workerList.appendChild(li);
+});});
+}
+
+window.login=function(){
+if(pass.value==='1234'){
+panel.style.display='block';
+updateAdmin();
+}else alert('Wrong');
+}
+
+// LOCATION CUSTOMER
+window.getLocation=function(){
+if(!navigator.geolocation){alert('Location not supported');return;}
+navigator.geolocation.getCurrentPosition(pos=>{
+let lat=pos.coords.latitude;
+let lon=pos.coords.longitude;
+address.value=`Lat: ${lat}, Lon: ${lon}`;
+map.innerHTML=`<iframe width="100%" height="200" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;
 });
-function changeQty(item,delta){ foodCart[item]+=delta; if(foodCart[item]<0) foodCart[item]=0; document.getElementById('qty_'+item).innerText=foodCart[item]; updateCart();}
-function openFoodPage(){show('foodPage');updateCart();}
-
-// Service Page
-function openServicePage(service){
-  document.getElementById('serviceTitle').innerText=service;
-  const typeSelect=document.getElementById('serviceType'); typeSelect.innerHTML='';
-  if(service==='Grocery'){typeSelect.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
-  else if(service==='Electrician' || service==='Mechanic'){typeSelect.innerHTML=`<option>Installation</option><option>Repair</option>`;}
-  show('servicePage');
 }
 
-// Universal location
-let confirmedMapLinks = {Food:'',Service:'',Worker:''};
-function useLocation(type){
-  const btn = type==='Food'?document.getElementById('useLocationFood') : 
-              type==='Service'?document.getElementById('useLocationService') : document.getElementById('useLocationWorker');
-  btn.classList.add('active'); setTimeout(()=>btn.classList.remove('active'),300);
-  if(type==='Food') document.getElementById('manualAddressFood').style.display='none';
-  detectLocation((link)=>{
-    confirmedMapLinks[type] = link;
-    if(type==='Food') document.getElementById('mapConfirmFood').innerHTML = `<a href="${link}" target="_blank">Confirm Map</a>`;
-    else if(type==='Worker') document.getElementById('mapConfirmWorker').innerHTML = `<a href="${link}" target="_blank">Confirm Map</a>`;
-  });
+// LOCATION WORKER
+window.getLocationWorker=function(){
+if(!navigator.geolocation){alert('Location not supported');return;}
+navigator.geolocation.getCurrentPosition(pos=>{
+let lat=pos.coords.latitude;
+let lon=pos.coords.longitude;
+waddress.value=`Lat: ${lat}, Lon: ${lon}`;
+map2.innerHTML=`<iframe width="100%" height="200" src="https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed"></iframe>`;
+});
 }
-function detectLocation(callback){
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(
-      (pos)=>{ let lat=pos.coords.latitude, lon=pos.coords.longitude; callback(`https://www.google.com/maps?q=${lat},${lon}`); },
-      ()=>{ let manualAddr = prompt("Location not detected. Enter manually:"); callback(`https://www.google.com/maps?q=${encodeURIComponent(manualAddr)}`);}
-    );
-  } else { let manualAddr = prompt("Geolocation not supported. Enter manually:"); callback(`https://www.google.com/maps?q=${encodeURIComponent(manualAddr)}`);}
-}
-
-// Booking functions
-function bookFood(){
-  let selectedFood=[]; for(let k in foodCart){if(foodCart[k]>0) selectedFood.push(k+' x'+foodCart[k]);}
-  if(selectedFood.length===0){alert('Select at least one item');return;}
-  let orders=JSON.parse(localStorage.getItem('orders')||'[]');
-  let address=document.getElementById('manualAddressFood').value || confirmedMapLinks.Food;
-  orders.push({service:'Food',food:selectedFood.join(', '),name:'-',phone:'-',address});
-  localStorage.setItem('orders',JSON.stringify(orders));
-  alert('Order Booked: '+selectedFood.join(', ')); updateCart(); foodCart={}; foodMenu.forEach(item=>foodCart[item.name]=0);
-  document.querySelectorAll('#foodPage span[id^="qty_"]').forEach(s=>s.innerText=0);
-  if(document.getElementById('panel')?.style.display==='block') updateAdminOrders();
-}
-function bookService(){
-  let name=document.getElementById('sname').value; let phone=document.getElementById('sphone').value; let address=document.getElementById('saddress').value || confirmedMapLinks.Service;
-  let service=document.getElementById('serviceTitle').innerText; let sub=document.getElementById('serviceType').value;
-  if(!name||!phone||!address){alert('Fill all fields');return;}
-  let orders=JSON.parse(localStorage.getItem('orders')||'[]');
-  orders.push({service,sub,name,phone,address}); localStorage.setItem('orders',JSON.stringify(orders));
-  alert('Order Booked: '+service+' - '+sub); if(document.getElementById('panel')?.style.display==='block') updateAdminOrders();
-}
-function registerWorker(){
-  let wname=document.getElementById('wname').value; let wphone=document.getElementById('wphone').value;
-  let wservice=document.getElementById('wservice').value; let wsub=document.getElementById('wsubcategory').value;
-  let waddress=document.getElementById('waddress').value || confirmedMapLinks.Worker;
-  if(!wname||!wphone||!waddress){alert('Fill all fields'); return;}
-  let workers=JSON.parse(localStorage.getItem('workers')||'[]');
-  workers.push({name:wname,phone:wphone,service:wservice,sub:wsub,address:waddress});
-  localStorage.setItem('workers',JSON.stringify(workers));
-  alert('Worker Registered'); if(document.getElementById('panel').style.display==='block') updateAdminWorkers();
-}
-
-// Admin
-function login(){ if(document.getElementById('pass').value==='Swetha@149'){ document.getElementById('panel').style.display='block'; updateAdminWorkers();updateAdminOrders();}
-else alert('Wrong Password');}
-function updateAdminWorkers(){
-  let workers=JSON.parse(localStorage.getItem('workers')||'[]'); let wlist=document.getElementById('workerList'); wlist.innerHTML='';
-  workers.forEach(w=>{let li=document.createElement('li'); li.innerHTML=`${w.name} | ${w.phone} | ${w.service} | ${w.sub} | <a href="${w.address}" target="_blank">Map</a>`; wlist.appendChild(li);});
-}
-function updateAdminOrders(){
-  let orders=JSON.parse(localStorage.getItem('orders')||'[]'); let olist=document.getElementById('orderList'); olist.innerHTML='';
-  orders.forEach(o=>{let li=document.createElement('li'); li.innerHTML=`
-    <strong>Service:</strong> ${o.service} ${o.sub?'- '+o.sub:''} ${o.food?'- '+o.food:''}<br>
-    <strong>Name:</strong> ${o.name || '-'}<br>
-    <strong>Phone:</strong> ${o.phone || '-'}<br>
-    <strong>Address:</strong> <a href="${o.address}" target="_blank">Map</a>`; olist.appendChild(li);
-  });
-}
-
-// Worker subcategories
-function updateWorkerType(){ let service=document.getElementById('wservice').value; let sub=document.getElementById('wsubcategory'); sub.innerHTML='';
-  if(service==='Food'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
-  else if(service==='Grocery'){sub.innerHTML=`<option>Home Delivery</option><option>Express Delivery</option>`;}
-  else{sub.innerHTML=`<option>Installation</option><option>Repair</option>`;}
-}
-
-// Init
-window.onload=function(){updateWorkerType();}
-</script>
-</body>
+</script><script>
+setTimeout(()=>{splash.style.display='none';home.classList.add('active');},2000);
+function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function selectService(s){service.value=s;show('booking');}
+</script></body>
   </html>
