@@ -1,45 +1,220 @@
-    <!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>MMS Cricket App</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MMS</title>
+
+<style>
+body{font-family:Arial;margin:0;background:#eef2f7;}
+header{background:#1e73be;color:white;text-align:center;padding:15px;font-size:24px;font-weight:bold;}
+.section{display:none;padding:20px;animation:fade 0.4s;}
+.active{display:block;}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.card{background:white;margin:10px;padding:20px;border-radius:15px;text-align:center;box-shadow:0 3px 8px rgba(0,0,0,0.1);cursor:pointer;}
+.card:active{transform:scale(0.95);}
+input,select{width:100%;padding:10px;margin:10px 0;border-radius:10px;border:1px solid #ccc;}
+button{background:#1e73be;color:white;border:none;padding:10px;border-radius:10px;width:100%;}
+nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-content:space-around;padding:10px;}
+.food-item{display:flex;justify-content:space-between;background:white;padding:10px;margin:5px;border-radius:10px;}
+</style>
 </head>
+
 <body>
 
-<header>
-  <h1>🏏 MMS Live Cricket</h1>
-</header>
+<header>MMS 🚀</header>
 
-<div class="container">
-
-  <!-- Match 1 -->
-  <div class="match-card">
-    <h2 id="teams1">RCB vs CSK</h2>
-    <p class="status">Live 🔴</p>
-    <p id="score1">RCB: 120/3 (15 overs)</p>
-    <button onclick="updateScore('score1')">Refresh</button>
-  </div>
-
-  <!-- Match 2 -->
-  <div class="match-card">
-    <h2 id="teams2">MI vs KKR</h2>
-    <p class="status">Upcoming 🟡</p>
-    <p>Starts at 7:30 PM</p>
-  </div>
-
-  <!-- Match 3 -->
-  <div class="match-card">
-    <h2 id="teams3">SRH vs RR</h2>
-    <p class="status">Completed 🟢</p>
-    <p>SRH won by 5 wickets</p>
-  </div>
-
+<div id="home" class="section active">
+<h2>Welcome 👋</h2>
+<div class="card" onclick="show('services')">🛠 Services</div>
+<div class="card" onclick="show('worker')">👷 Work</div>
+<div class="card" onclick="show('admin')">🔐 Admin</div>
 </div>
 
-<footer>
-  <p>Made by Mohan 🔥</p>
-</footer>
+<div id="services" class="section">
+<div class="card" onclick="openFood()">🍔 Food</div>
+<div class="card" onclick="openService('Grocery')">🛒 Grocery</div>
+<div class="card" onclick="openService('Electrician')">⚡ Electrician</div>
+</div>
 
-<script src="script.js"></script>
+<div id="food" class="section">
+<h2>Food</h2>
+<button onclick="useLocation('Food')">📍 Use My Location</button>
+<div id="mapFood"></div>
+<div id="foodList"></div>
+<h3>Cart</h3>
+<div id="cart"></div>
+<button onclick="bookFood()">Book Now</button>
+</div>
+
+<div id="service" class="section">
+<h2 id="stype"></h2>
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone">
+<button onclick="useLocation('Service')">📍 Use My Location</button>
+<div id="mapService"></div>
+<button onclick="bookService()">Book</button>
+</div>
+
+<div id="worker" class="section">
+<input id="wname" placeholder="Name">
+<input id="wphone" placeholder="Phone">
+<select id="wservice">
+<option>Food</option>
+<option>Grocery</option>
+<option>Electrician</option>
+</select>
+<button onclick="useLocation('Worker')">📍 Use My Location</button>
+<div id="mapWorker"></div>
+<button onclick="registerWorker()">Register</button>
+</div>
+
+<div id="admin" class="section">
+<input id="pass" placeholder="Password">
+<button onclick="login()">Login</button>
+<ul id="orders"></ul>
+</div>
+
+<nav>
+<button onclick="show('home')">🏠</button>
+<button onclick="show('services')">🛠</button>
+<button onclick="show('worker')">👷</button>
+<button onclick="show('admin')">🔐</button>
+</nav>
+
+<audio id="sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const app = initializeApp({
+databaseURL:"https://mmsapp-c1200-default-rtdb.asia-southeast1.firebasedatabase.app/"
+});
+const db=getDatabase(app);
+
+window.push=push;
+window.ref=ref;
+window.onValue=onValue;
+window.db=db;
+</script>
+
+<script>
+
+function show(id){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+
+// FOOD
+let menu=["Pizza","Burger","Cake","Noodles","Sandwich"];
+let cart={}; menu.forEach(i=>cart[i]=0);
+
+function openFood(){
+show('food');
+let list=document.getElementById('foodList');
+list.innerHTML='';
+menu.forEach(i=>{
+list.innerHTML+=`
+<div class="food-item">
+${i}
+<button onclick="add('${i}')">+</button>
+<span id="${i}">0</span>
+<button onclick="remove('${i}')">-</button>
+</div>`;
+});
+}
+
+function add(i){cart[i]++;document.getElementById(i).innerText=cart[i];updateCart();}
+function remove(i){if(cart[i]>0)cart[i]--;document.getElementById(i).innerText=cart[i];updateCart();}
+
+function updateCart(){
+let c=document.getElementById('cart');c.innerHTML='';
+for(let k in cart){if(cart[k]>0)c.innerHTML+=k+" x"+cart[k]+"<br>";}
+}
+
+// SERVICE
+function openService(s){show('service');document.getElementById('stype').innerText=s;}
+
+// LOCATION
+let locLinks={};
+
+function useLocation(type){
+navigator.geolocation.getCurrentPosition(pos=>{
+let lat=pos.coords.latitude;
+let lon=pos.coords.longitude;
+let link=`https://maps.google.com?q=${lat},${lon}`;
+locLinks[type]=link;
+
+document.getElementById('map'+type).innerHTML=
+`<iframe width="100%" height="150"
+src="https://maps.google.com/maps?q=${lat},${lon}&output=embed"></iframe>`;
+});
+}
+
+// BOOKING
+function bookFood(){
+let items=[];
+for(let k in cart){if(cart[k]>0)items.push(k+" x"+cart[k]);}
+if(items.length==0)return alert("Select items");
+
+push(ref(db,'orders'),{
+service:"Food",
+items:items.join(','),
+map:locLinks['Food']
+});
+
+document.getElementById("sound").play();
+alert("Ordered!");
+}
+
+function bookService(){
+push(ref(db,'orders'),{
+service:document.getElementById('stype').innerText,
+name:document.getElementById('name').value,
+phone:document.getElementById('phone').value,
+map:locLinks['Service']
+});
+
+document.getElementById("sound").play();
+alert("Booked!");
+}
+
+function registerWorker(){
+push(ref(db,'workers'),{
+name:document.getElementById('wname').value,
+phone:document.getElementById('wphone').value,
+service:document.getElementById('wservice').value,
+map:locLinks['Worker']
+});
+
+alert("Worker Added");
+}
+
+// ADMIN
+function login(){
+if(document.getElementById('pass').value==="Swetha@149"){
+listen();
+}else alert("Wrong Password");
+}
+
+function listen(){
+onValue(ref(db,'orders'),snap=>{
+let data=snap.val();
+let list=document.getElementById('orders');
+list.innerHTML='';
+if(!data)return;
+
+document.getElementById('sound').play();
+
+Object.values(data).forEach(o=>{
+list.innerHTML+=`<li>${o.service} - <a href="${o.map}" target="_blank">Map</a></li>`;
+});
+});
+}
+
+</script>
+
 </body>
-</html>
+    </html>
