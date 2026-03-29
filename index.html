@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,24 +7,25 @@
 
 <style>
 body{font-family:Arial;margin:0;background:#eef2f7;}
-header{background:#1e73be;color:#fff;text-align:center;padding:15px;font-size:24px;}
+header{background:#1e73be;color:white;text-align:center;padding:15px;font-size:24px;}
 
-.section{display:none;padding:20px;opacity:0;transform:translateY(20px);transition:.3s;}
-.section.active{display:block;opacity:1;transform:translateY(0);}
+.section{display:none;padding:20px;animation:fade .3s;}
+.section.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(20px);}to{opacity:1;}}
 
-.card{background:#fff;margin:10px;padding:20px;border-radius:12px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,.1);cursor:pointer;}
+.card{background:white;margin:10px;padding:20px;border-radius:15px;text-align:center;box-shadow:0 3px 8px rgba(0,0,0,0.1);cursor:pointer;}
 .card:active{transform:scale(.95);}
 
-input,select{width:100%;padding:10px;margin:10px 0;border-radius:8px;border:1px solid #ccc;}
-button{background:#1e73be;color:#fff;border:none;padding:10px;border-radius:8px;width:100%;}
+input,select{width:100%;padding:10px;margin:10px 0;border-radius:10px;border:1px solid #ccc;}
+button{background:#1e73be;color:white;border:none;padding:10px;border-radius:10px;width:100%;}
 
-nav{position:fixed;bottom:0;width:100%;background:#fff;display:flex;justify-content:space-around;padding:10px;}
+nav{position:fixed;bottom:0;width:100%;background:white;display:flex;justify-content:space-around;padding:10px;}
 
-.food-item{display:flex;justify-content:space-between;align-items:center;background:#fff;margin:5px;padding:10px;border-radius:10px;}
+.food-item{display:flex;justify-content:space-between;background:white;padding:10px;margin:5px;border-radius:10px;}
 
 .qty-box{display:flex;background:#1e73be;border-radius:8px;overflow:hidden;}
-.qty-box button{background:none;color:#fff;border:none;width:30px;}
-.qty-box span{background:#fff;color:#1e73be;width:25px;text-align:center;}
+.qty-box button{background:none;color:white;border:none;width:30px;}
+.qty-box span{background:white;color:#1e73be;width:25px;text-align:center;}
 </style>
 </head>
 
@@ -32,6 +33,7 @@ nav{position:fixed;bottom:0;width:100%;background:#fff;display:flex;justify-cont
 
 <header>MMS 🚀</header>
 
+<!-- HOME -->
 <div id="home" class="section active">
 <h2>Welcome</h2>
 <div class="card" onclick="show('services')">🛠 Services</div>
@@ -39,6 +41,7 @@ nav{position:fixed;bottom:0;width:100%;background:#fff;display:flex;justify-cont
 <div class="card" onclick="show('admin')">🔐 Admin</div>
 </div>
 
+<!-- SERVICES -->
 <div id="services" class="section">
 <div class="card" onclick="openFood()">🍔 Food</div>
 <div class="card" onclick="openService('Grocery')">🛒 Grocery</div>
@@ -46,13 +49,16 @@ nav{position:fixed;bottom:0;width:100%;background:#fff;display:flex;justify-cont
 
 <!-- FOOD -->
 <div id="food" class="section">
-<input id="fname" placeholder="Name">
-<input id="fphone" placeholder="Phone">
 
-<button onclick="useLocation('Food')">📍 Location</button>
+<input id="fname" placeholder="Your Name">
+<input id="fphone" placeholder="Mobile Number">
+
+<button onclick="useLocation('Food')">📍 Use Location</button>
 <div id="mapFood"></div>
 
 <div id="foodList"></div>
+
+<h3>Cart</h3>
 <div id="cart"></div>
 
 <button onclick="bookFood()">Order</button>
@@ -63,7 +69,7 @@ nav{position:fixed;bottom:0;width:100%;background:#fff;display:flex;justify-cont
 <h3 id="stype"></h3>
 <input id="name" placeholder="Name">
 <input id="phone" placeholder="Phone">
-<button onclick="useLocation('Service')">📍 Location</button>
+<button onclick="useLocation('Service')">📍 Use Location</button>
 <div id="mapService"></div>
 <button onclick="bookService()">Book</button>
 </div>
@@ -76,7 +82,7 @@ nav{position:fixed;bottom:0;width:100%;background:#fff;display:flex;justify-cont
 <option>Food</option>
 <option>Grocery</option>
 </select>
-<button onclick="useLocation('Worker')">📍 Location</button>
+<button onclick="useLocation('Worker')">📍 Use Location</button>
 <div id="mapWorker"></div>
 <button onclick="registerWorker()">Register</button>
 </div>
@@ -85,7 +91,12 @@ nav{position:fixed;bottom:0;width:100%;background:#fff;display:flex;justify-cont
 <div id="admin" class="section">
 <input id="pass" placeholder="Password">
 <button onclick="login()">Login</button>
-<ul id="orders"></ul>
+
+<div id="panel" style="display:none">
+<h3>Orders</h3>
+<ul id="orderList"></ul>
+</div>
+
 </div>
 
 <nav>
@@ -95,8 +106,6 @@ nav{position:fixed;bottom:0;width:100%;background:#fff;display:flex;justify-cont
 <button onclick="show('admin')">🔐</button>
 </nav>
 
-<audio id="sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
-
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -105,7 +114,7 @@ import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebas
 const app = initializeApp({
 databaseURL:"https://mmsapp-c1200-default-rtdb.asia-southeast1.firebasedatabase.app/"
 });
-const db=getDatabase(app);
+const db = getDatabase(app);
 
 window.db=db;
 window.ref=ref;
@@ -115,15 +124,19 @@ window.onValue=onValue;
 
 <script>
 
-// navigation
+// NAV
 function show(id){
 document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-setTimeout(()=>document.getElementById(id).classList.add('active'),50);
+document.getElementById(id).classList.add('active');
 }
 
 // FOOD
-let menu=["Pizza","Burger","Cake"];
-let cart={}; menu.forEach(i=>cart[i]=0);
+let menu=["Pizza","Burger","Cake","Noodles"];
+let cart={};
+menu.forEach(i=>cart[i]=0);
+
+const foodList=document.getElementById('foodList');
+const cartDiv=document.getElementById('cart');
 
 function openFood(){
 show('food');
@@ -139,103 +152,143 @@ ${i}
 </div>
 </div>`;
 });
+updateCart();
 }
 
 function change(i,d){
-cart[i]+=d; if(cart[i]<0)cart[i]=0;
+cart[i]+=d;
+if(cart[i]<0)cart[i]=0;
 document.getElementById(i).innerText=cart[i];
 updateCart();
 }
 
 function updateCart(){
 cartDiv.innerHTML='';
-for(let k in cart){if(cart[k]>0)cartDiv.innerHTML+=k+" x"+cart[k]+"<br>";}
+for(let k in cart){
+if(cart[k]>0){
+cartDiv.innerHTML+=k+" x"+cart[k]+"<br>";
+}
+}
 }
 
 // SERVICE
-function openService(s){show('service');stype.innerText=s;}
+function openService(s){
+show('service');
+document.getElementById('stype').innerText=s;
+}
 
 // LOCATION
 let loc={};
+
 function useLocation(type){
 navigator.geolocation.getCurrentPosition(p=>{
-let lat=p.coords.latitude,lon=p.coords.longitude;
+let lat=p.coords.latitude;
+let lon=p.coords.longitude;
+
 loc[type]=`https://maps.google.com?q=${lat},${lon}`;
+
 document.getElementById("map"+type).innerHTML=
 `<iframe width="100%" height="150" src="https://maps.google.com/maps?q=${lat},${lon}&output=embed"></iframe>`;
 });
 }
 
-// BOOK FOOD
+// FOOD BOOK
 function bookFood(){
-if(!fname.value||!fphone.value)return alert("Enter details");
+
+let name=document.getElementById('fname').value;
+let phone=document.getElementById('fphone').value;
+
+if(!name||!phone){
+alert("Enter name & phone");
+return;
+}
 
 let items=[];
-for(let k in cart){if(cart[k]>0)items.push(k+" x"+cart[k]);}
-if(items.length==0)return alert("Select items");
+for(let k in cart){
+if(cart[k]>0) items.push(k+" x"+cart[k]);
+}
+
+if(items.length==0){
+alert("Select items");
+return;
+}
 
 push(ref(db,'orders'),{
 service:"Food",
 items:items.join(','),
-name:fname.value,
-phone:fphone.value,
+name:name,
+phone:phone,
 map:loc['Food']
 });
 
-sound.play();
-alert("Order placed");
+alert("Order placed ✅");
 }
 
-// SERVICE
+// SERVICE BOOK
 function bookService(){
 push(ref(db,'orders'),{
-service:stype.innerText,
-name:name.value,
-phone:phone.value,
+service:document.getElementById('stype').innerText,
+name:document.getElementById('name').value,
+phone:document.getElementById('phone').value,
 map:loc['Service']
 });
-sound.play();
 alert("Booked");
 }
 
 // WORKER
 function registerWorker(){
 push(ref(db,'workers'),{
-name:wname.value,
-phone:wphone.value,
-service:wservice.value,
+name:document.getElementById('wname').value,
+phone:document.getElementById('wphone').value,
+service:document.getElementById('wservice').value,
 map:loc['Worker']
 });
-alert("Worker Added");
+alert("Worker Registered");
 }
 
 // ADMIN FIXED
 function login(){
-if(pass.value==="Swetha@149"){
 
-onValue(ref(db,'orders'),snap=>{
-let data=snap.val();
-orders.innerHTML='';
+if(document.getElementById('pass').value==="Swetha@149"){
+
+document.getElementById('panel').style.display='block';
+
+const olist=document.getElementById('orderList');
+
+onValue(ref(db,'orders'),(snapshot)=>{
+
+const data=snapshot.val();
+olist.innerHTML='';
 
 if(!data){
-orders.innerHTML="<li>No orders</li>";
+olist.innerHTML="<li>No orders</li>";
 return;
 }
 
-Object.values(data).forEach(o=>{
-orders.innerHTML+=`
-<li>
+Object.keys(data).forEach(key=>{
+const o=data[key];
+
+const li=document.createElement('li');
+
+li.innerHTML=`
 <b>${o.service}</b><br>
-👤 ${o.name||'-'}<br>
-📞 ${o.phone||'-'}<br>
-🍔 ${o.items||''}<br>
+👤 ${o.name || '-'}<br>
+📞 ${o.phone || '-'}<br>
+🍔 ${o.items || ''}<br>
 📍 <a href="${o.map}" target="_blank">Map</a>
-</li><br>`;
-});
+<hr>
+`;
+
+olist.appendChild(li);
 
 });
 
-}else alert("Wrong password");
+});
+
+}else{
+alert("Wrong password");
+}
+
 }
 
 </script>
